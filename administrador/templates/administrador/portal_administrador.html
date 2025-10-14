@@ -1,0 +1,146 @@
+{% extends "administrador/base.html" %}
+{% load static %}
+
+{% block content %}
+    <body class="bg-light">
+
+    <div class="container py-5">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-primary">Portal del Administrador</h2>
+        </div>
+
+        <!-- Crear Reclutador -->
+        <div class="card shadow-sm mb-5">
+            <div class="card-header bg-primary text-white">
+                <h3 class="h5 mb-0">Crear Reclutador</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ form.as_p }}
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-person-plus"></i> Registrar Reclutador
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Usuarios Existentes -->
+        <div class="card shadow-sm mb-5">
+            <div class="card-header bg-secondary text-white">
+                <h3 class="h5 mb-0">Usuarios Existentes</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <!-- Reclutadores Existentes -->
+                    {% for r in reclutadores %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ r.nombre }} {{ r.apellido }} - Rut: {{ r.rut }}</span>
+                            <span class="badge bg-info text-dark">Reclutador/{{ r.area|capfirst }}</span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted text-center">No hay reclutadores registrados.</li>
+                    {% endfor %}
+                    <!-- Candidatos Existentes -->
+                    {% for c in candidatos %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ c.nombre }} {{ c.apellido }} - Rut: {{ c.rut }}</span>
+                            <span class="badge bg-primary text-dark">Candidato</span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted text-center">No hay candidatos registrados.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Editar/eliminar Reclutadores -->
+
+        <h3>Reclutadores Registrados</h3>
+        {% if reclutadores %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>RUT</th>
+                <th>Área</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for r in reclutadores %}
+                <tr>
+                <td>{{ r.nombre }} {{ r.apellido }}</td>
+                <td>{{ r.usuario.email }}</td>
+                <td>{{ r.rut }}</td>
+                <td>{{ r.area|capfirst }}</td>
+                <td>
+                    <a href="{% url 'administrador:editar_reclutador' r.pk %}" class="btn btn-success btn-sm">Editar</a>
+                    <form method="POST" action="{% url 'administrador:eliminar_reclutador' r.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro que deseas eliminar este reclutador?');">
+                        Eliminar
+                    </button>
+                    </form>
+                </td>                
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay reclutadores registrados.</p>
+        {% endif %}
+
+        <!-- Editar/Eliminar Candidatos -->
+         <h3>Candidatos Registrados</h3>
+        {% if candidatos %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Correo</th>
+                <th>RUT</th>
+                <th>Contacto</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for c in candidatos %}
+                <tr>
+                <td>{{ c.nombre }} {{ c.apellido }}</td>
+                <td>{{ c.usuario.email }}</td>
+                <td>{{ c.rut }}</td>
+                <td>{{ c.telefono }}</td>
+                <td>
+                    <a href="{% url 'administrador:editar_candidato' c.pk %}" class="btn btn-success btn-sm">Editar</a>
+                    <form method="POST" action="{% url 'administrador:eliminar_candidato' c.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro que deseas eliminar este reclutador?');">
+                        Eliminar
+                    </button>
+                    </form>
+                </td>                
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No hay reclutadores registrados.</p>
+        {% endif %}
+
+
+        <!-- Volver -->
+        <div class="text-center">
+            <a href="{% url 'main:logout' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Salir del Portal
+            </a>
+        </div>
+
+    </div>
+
+    </body>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "ofertas_laborales/base.html" %}
+
+{% block content %}
+<h2>Mi Perfil</h2>
+<ul class="list-group">
+  <li class="list-group-item"><strong>Nombre:</strong> {{ reclutador.nombre }} {{ reclutador.apellido }}</li>
+  <li class="list-group-item"><strong>RUT:</strong> {{ reclutador.rut }}</li>
+  <li class="list-group-item"><strong>Area:</strong> {{ reclutador.area }}</li>
+  <li class="list-group-item"><strong>Email:</strong> {{ reclutador.usuario.email }}</li>
+</ul>
+<a class="btn btn-success" href="{% url 'ofertas_laborales:vista_candidato' %}">Volver</a>
+{% endblock %}

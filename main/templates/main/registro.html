@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Registro Candidato</title>
+<link rel="icon" href="{% static 'images/logo.ico' %}" type="image/x-icon">  
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+  <main class="container">
+    <div class="register-card">    
+      <h1>Registro de Candidato</h1>
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          <h4>Errores encontrados:</h4>
+          <ul>
+            {% for field, errors in form.errors.items %}
+              {% for error in errors %}
+                <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif messages %}
+        {% for m in messages %}
+          <div class="alert alert-success">{{ m }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <input type="text" name="username" class="form-control" placeholder="Ingrese su nombre de usuario" required>
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" class="form-control" placeholder="Ingrese su correo" required>
+        </div>
+        <div class="form-group">
+          <input type="password" name="password1" class="form-control" placeholder="Ingrese su contraseña" required>
+        </div>
+        <div class="form-group">
+          <input type="password" name="password2" class="form-control" placeholder="Confirme su contraseña" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="rut" class="form-control" placeholder="Ingrese su RUT (Ej: 12345678-9)" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="nombre" class="form-control" placeholder="Ingrese su nombre" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="apellido" class="form-control" placeholder="Ingrese su apellido" required>
+        </div>
+        <div class="form-group">
+          <input type="number" name="experiencia" class="form-control" placeholder="Experiencia (años)" min="0">
+        </div>
+        <div class="form-group">
+          <input type="text" name="descripcion" class="form-control" placeholder="Ingrese su perfil profesional" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="telefono" class="form-control" placeholder="Ingrese su telefono de contacto" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="direccion" class="form-control" placeholder="Ingrese su domicilio" required>
+        </div>
+        <div class="form-group">
+          <input type="file" name="cv" class="form-control">
+        </div>
+        <button type="submit" class="btn-register">Registrarme</button>
+      </form>
+
+      <div class="login-link">
+        <p>¿Ya tienes cuenta? <a href="{% url 'main:login' %}">Ingresar</a></p>
+      </div>
+      <div class="home-link">
+        <a href="{% url 'home' %}" class="btn btn-secondary">Volver al Inicio</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

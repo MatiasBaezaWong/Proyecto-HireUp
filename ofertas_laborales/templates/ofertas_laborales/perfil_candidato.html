@@ -1,0 +1,100 @@
+{% extends "ofertas_laborales/base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Mi Perfil</h2>
+
+{% if messages %}
+  {% for m in messages %}
+    <div class="alert alert-{{ m.tags }}">{{ m }}</div>
+  {% endfor %}
+{% endif %}
+
+<!-- 🔹 Vista de solo lectura -->
+<div id="perfil-info">
+  <ul class="list-group mb-3">
+    <li class="list-group-item"><strong>Nombre:</strong> {{ request.user.perfil_candidato.nombre }} {{ request.user.perfil_candidato.apellido }}</li>
+    <li class="list-group-item"><strong>Correo:</strong> {{ request.user.email }}</li>
+    <li class="list-group-item"><strong>RUT:</strong> {{ request.user.perfil_candidato.rut }}</li>
+    <li class="list-group-item"><strong>Experiencia:</strong> {{ request.user.perfil_candidato.experiencia }} años</li>
+    <li class="list-group-item"><strong>Descripcion:</strong> {{ request.user.perfil_candidato.descripcion }}</li>
+    <li class="list-group-item"><strong>Telefono de contacto:</strong> {{ request.user.perfil_candidato.telefono }}</li>
+    <li class="list-group-item"><strong>Domicilio:</strong> {{ request.user.perfil_candidato.direccion }}</li>
+    <li class="list-group-item">
+        <strong>Currículum:</strong>
+        {% if request.user.perfil_candidato.cv %}
+            <a href="{{ request.user.perfil_candidato.cv.url }}" class="btn btn-outline-primary btn-sm" download>
+                Descargar CV
+            </a>
+        {% else %}
+            <span class="text-muted">No hay archivo</span>
+        {% endif %}
+    </li>
+  </ul>
+
+  <div class="d-flex gap-2">
+    <button id="editarBtn" class="btn btn-primary">Editar información</button>
+    <button id="passwordBtn" class="btn btn-warning">Cambiar contraseña</button>
+    <a class="btn btn-success" href="{% url 'ofertas_laborales:vista_candidato' %}">Volver</a>
+  </div>
+</div>
+
+<!-- 🔹 Formulario de edición de datos (oculto) -->
+<div id="form-edicion" class="card p-3 mt-3" style="display: none;">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="d-flex justify-content-between mt-2">
+      <button type="submit" name="update_info" class="btn btn-success">Guardar cambios</button>
+      <button type="button" id="cancelarEditBtn" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<!-- 🔹 Formulario de cambio de contraseña (oculto) -->
+<div id="form-password" class="card p-3 mt-3" style="display: none;">
+  <h5 class="mb-3">Cambiar contraseña</h5>
+  <form method="POST">
+    {% csrf_token %}
+    {{ pass_form.as_p }}
+    <div class="d-flex justify-content-between mt-2">
+      <button type="submit" name="change_password" class="btn btn-warning">Actualizar contraseña</button>
+      <button type="button" id="cancelarPassBtn" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<!-- 🔹 Script para mostrar/ocultar formularios -->
+<script>
+  const perfilInfo = document.getElementById("perfil-info");
+  const formEdicion = document.getElementById("form-edicion");
+  const formPassword = document.getElementById("form-password");
+
+  const editarBtn = document.getElementById("editarBtn");
+  const passwordBtn = document.getElementById("passwordBtn");
+  const cancelarEditBtn = document.getElementById("cancelarEditBtn");
+  const cancelarPassBtn = document.getElementById("cancelarPassBtn");
+
+  editarBtn.addEventListener("click", () => {
+    perfilInfo.style.display = "none";
+    formEdicion.style.display = "block";
+  });
+
+  passwordBtn.addEventListener("click", () => {
+    perfilInfo.style.display = "none";
+    formPassword.style.display = "block";
+  });
+
+  cancelarEditBtn.addEventListener("click", () => {
+    formEdicion.style.display = "none";
+    perfilInfo.style.display = "block";
+  });
+
+  cancelarPassBtn.addEventListener("click", () => {
+    formPassword.style.display = "none";
+    perfilInfo.style.display = "block";
+  });
+</script>
+{% endblock %}
+
+
+

@@ -1,0 +1,15 @@
+{% extends "ofertas_laborales/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ oferta.titulo }}</h2>
+    <p><strong>Obra:</strong> {{ oferta.obra }}</p>
+    <p><strong>Cargo:</strong> {{ oferta.cargo }}</p>
+    <p><strong>Estado:</strong> {{ oferta.estado|capfirst }}</p>
+    <p><strong>Fecha de publicación:</strong> {{ oferta.fecha_publicacion|date:"d/m/Y" }}</p>
+    <p><strong>Descripción:</strong> {{ oferta.descripcion }}</p>
+    <p><strong>Requisitos:</strong> {{ oferta.requisitos }}</p>
+
+    <a href="{% url 'ofertas_laborales:vista_candidato' %}" class="btn btn-secondary mt-3">Volver</a>
+</div>
+{% endblock %}

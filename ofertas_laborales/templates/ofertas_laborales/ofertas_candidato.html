@@ -1,0 +1,40 @@
+{% extends "ofertas_laborales/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Ofertas Laborales Disponibles</h2>
+
+    {% if ofertas %}
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Título</th>
+                    <th>Obra</th>
+                    <th>Cargo</th>
+                    <th>Estado</th>
+                    <th>Fecha Publicación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for oferta in ofertas %}
+                    <tr>
+                        <td>{{ oferta.titulo }}</td>
+                        <td>{{ oferta.obra }}</td>
+                        <td>{{ oferta.cargo }}</td>
+                        <td>{{ oferta.estado|capfirst }}</td>
+                        <td>{{ oferta.fecha_publicacion|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" class="btn btn-info btn-sm"></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning text-center">
+            Aún no has publicado ninguna oferta laboral.
+        </div>
+    {% endif %}
+</div>    
+
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'ofertas_laborales/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>¿Seguro que deseas eliminar esta oferta?</h2>
+    <p><strong>{{ oferta.titulo }}</strong></p>
+    <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

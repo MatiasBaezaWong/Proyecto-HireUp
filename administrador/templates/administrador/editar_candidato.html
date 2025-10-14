@@ -1,0 +1,14 @@
+{% extends "administrador/base.html" %}
+{% block content %}
+<div class="container mt-5">
+  <h2>Editar Candidato: {{ candidato.nombre }} {{ candidato.apellido }}</h2>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}    
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="{% url 'administrador:portal_administrador' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+
+{% endblock %}

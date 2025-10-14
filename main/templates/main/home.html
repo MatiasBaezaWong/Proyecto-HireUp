@@ -1,0 +1,32 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+    {% load static %}
+
+    <header>
+            <h1>Ascensores Maximiliano Baeza E.I.R.L</h1>
+            <nav>
+                <a href="">Servicios</a>
+                <a href="">¿Con quien trabajamos?</a>
+                <a href="{% url 'main:logout' %}">Cerrar sesión</a>
+                <a href="{% url 'main:login' %}" class="btn-signin-main">ACCEDER AL PORTAL</a>
+            </nav>
+        </header>
+<BR></BR>
+    <div class="container">
+        <main>
+            <div class="content">
+                <h1>¿QUIENES SOMOS?</h1>
+                <p class="description">En Ascensores Maximiliano Baeza E.I.R.L. somos una empresa en constante crecimiento dedicada a la instalación y mantención de ascensores, 
+                trabajando como socio estratégico de grandes compañías del rubro. Nos especializamos en brindar un servicio seguro, eficiente y de calidad, 
+                respaldado por un equipo técnico comprometido y capacitado. Nuestro objetivo es consolidarnos como un referente confiable en el mercado, 
+                contribuyendo al éxito de cada proyecto y generando oportunidades para profesionales que deseen formar parte de nuestro desarrollo.</p>
+                <div class="buttons">
+                    <a href="{% url 'main:registro_candidato' %}" class="btn-signin-main">CREA TU PERFIL</a>                  
+                </div>    
+            </div>
+        </main>
+    </div>
+
+{% endblock %}

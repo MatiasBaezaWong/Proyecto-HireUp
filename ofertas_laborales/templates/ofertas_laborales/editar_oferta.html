@@ -1,0 +1,12 @@
+{% extends 'ofertas_laborales/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Editar Oferta: {{ oferta.titulo }}</h2>
+    <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Guardar cambios</button>
+    <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}
