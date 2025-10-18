@@ -13,6 +13,7 @@
                     <th>Cargo</th>
                     <th>Estado</th>
                     <th>Fecha Publicación</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -24,7 +25,7 @@
                         <td>{{ oferta.estado|capfirst }}</td>
                         <td>{{ oferta.fecha_publicacion|date:"d/m/Y" }}</td>
                         <td>
-                            <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" class="btn btn-info btn-sm"></a>
+                            <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" class="btn btn-info btn-sm">Mas Informacion</a>
                         </td>
                     </tr>
                 {% endfor %}
