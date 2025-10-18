@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
+from django.contrib.messages import get_messages
 from .forms import RegistroCandidatoForm, LoginUsuarioForm
 from django.contrib.auth.decorators import login_required
 
@@ -61,7 +62,8 @@ def redirigir_por_rol(request):
 # CIERRE DE SESION
 def logout_usuario(request):
     logout(request)
+    list(get_messages(request))
     request.session.flush()
     messages.info(request, "Sesión cerrada correctamente.")
-    return render(request, 'main/home.html')    
+    return render(request, 'main/login.html')    
 

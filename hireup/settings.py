@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from decouple import config
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -91,8 +96,13 @@ WSGI_APPLICATION = 'hireup.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'HireUp_DB',
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "Hireup2025",
+        "HOST": "db.aevbwiroyfozpstpcxdw.supabase.co",
+        "PORT": "5432",
     }
 }
 

@@ -1,4 +1,5 @@
 import re
+from .storage_utils import upload_cv
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
@@ -52,6 +53,11 @@ class RegistroCandidatoForm(UserCreationForm):
 
         if commit:
             user.save()
+
+            cv_file = self.cleaned_data.get("cv")
+            cv_url = None
+            if cv_file:
+                cv_url = upload_cv(cv_file, f"{user.username}_{cv_file.name}")
             # Crear perfil candidato asociado
             Candidato.objects.create(
                 usuario=user,
@@ -62,7 +68,7 @@ class RegistroCandidatoForm(UserCreationForm):
                 descripcion=self.cleaned_data["descripcion"],
                 telefono=self.cleaned_data.get("telefono"),
                 direccion=self.cleaned_data.get("direccion"),
-                cv=self.cleaned_data.get("cv"),
+                cv=cv_url,
             )
         return user
 

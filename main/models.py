@@ -33,14 +33,14 @@ class Usuario(AbstractUser):
 # =============================
 class Candidato(models.Model):
     usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="perfil_candidato")
-    rut = models.CharField("RUT", max_length=12, unique=True)
+    rut = models.CharField("RUT", max_length=10, unique=True)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     experiencia = models.PositiveIntegerField("Años de experiencia", default=0)
     descripcion = models.TextField("Descripcion", blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
     direccion = models.CharField(max_length=100, blank=True, null=True)
-    cv = models.FileField(upload_to="cvs/", null=True, blank=True)
+    cv = models.URLField("CV", max_length=500, blank=True, null=True)
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.rut})"

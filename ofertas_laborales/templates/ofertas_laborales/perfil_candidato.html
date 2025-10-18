@@ -22,7 +22,7 @@
     <li class="list-group-item">
         <strong>Currículum:</strong>
         {% if request.user.perfil_candidato.cv %}
-            <a href="{{ request.user.perfil_candidato.cv.url }}" class="btn btn-outline-primary btn-sm" download>
+            <a href="{{ request.user.perfil_candidato.cv }}" class="btn btn-outline-primary btn-sm" download></a>
                 Descargar CV
             </a>
         {% else %}
