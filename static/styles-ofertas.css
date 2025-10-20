@@ -1,0 +1,73 @@
+/* HEADER */
+.hireup-navbar {
+  background: #f4f5f5;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Marca */
+.hireup-navbar .navbar-brand {
+  font-size: 1.2rem;
+  letter-spacing: 0.5px;
+}
+
+/* Menú */
+.hireup-navbar .nav-link {
+  color: black !important;
+  transition: color 0.2s ease;
+}
+
+/* Dropdown */
+.dropdown-menu {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* OFERTAS */
+body {
+  background-color: #f4f5f5;
+  font-family: 'Inter', sans-serif;
+}
+
+.card-oferta {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgba(100, 100, 100, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-oferta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(80, 150, 100, 0.15);
+  border-color: #000000ab;
+  cursor: pointer;;
+}
+
+.card-oferta h4 {
+  color: #1e1e1e;
+}
+
+.card-oferta p {
+  line-height: 1.4;
+}
+
+.border-start {
+  border-color: #dcdcdc !important;
+}
+
+.btn-outline-success {
+  color: #27ae60;
+  border-color: #27ae60;
+  font-weight: 500;
+}
+
+.btn-outline-success:hover {
+  background-color: #27ae60;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
+}
+
+
+

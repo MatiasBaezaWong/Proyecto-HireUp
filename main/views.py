@@ -29,12 +29,12 @@ def registro_candidato(request):
 
 # LOGIN
 def login_usuario(request):
+    list(get_messages(request))
     if request.method == "POST":
         form = LoginUsuarioForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, f"Bienvenido, {user.username}")
             return redirect("ofertas_laborales:vista_candidato")
         else:
             messages.error(request, "Usuario o contraseña incorrectos.")
@@ -64,6 +64,5 @@ def logout_usuario(request):
     logout(request)
     list(get_messages(request))
     request.session.flush()
-    messages.info(request, "Sesión cerrada correctamente.")
-    return render(request, 'main/login.html')    
+    return render(request, 'main/home.html')    
 

@@ -1,3 +1,5 @@
+import re
+from django.core.exceptions import ValidationError
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
 from main.models import Candidato, Usuario, OfertaLaboral
@@ -29,15 +31,19 @@ class EditarCandidatoForm(forms.ModelForm):
         }
 
     def clean_cv(self):
-        """Validar el CV (tipo de archivo y tamaño máximo)"""
-        cv = self.cleaned_data.get("cv", False)
-        if cv:
-            if cv.size > 5 * 1024 * 1024:  # 5 MB
-                raise ValidationError("El archivo es demasiado grande (máximo 5 MB).")
+        cv = self.cleaned_data.get("cv")
 
-            valid_extensions = [".pdf", ".docx"]
-            if not any(cv.name.lower().endswith(ext) for ext in valid_extensions):
-                raise ValidationError("Solo se permiten archivos PDF o DOCX.")
+        if not cv or isinstance(cv, str):
+            return cv
+
+        if cv.size > 5 * 1024 * 1024:
+            raise ValidationError("El archivo es demasiado grande (máximo 5 MB).")
+
+        valid_extensions = [".pdf", ".docx"]
+        ext = os.path.splitext(cv.name)[1].lower()
+        if ext not in valid_extensions:
+            raise ValidationError("Solo se permiten archivos PDF o DOCX.")
+
         return cv
 
     def clean_rut(self):

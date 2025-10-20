@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .forms import EditarCandidatoForm, CustomPasswordChangeForm, CrearOfertaForm
-from main.models import OfertaLaboral
+from main.models import OfertaLaboral, Postulacion
+from datetime import datetime
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -139,3 +141,41 @@ def eliminar_oferta(request, oferta_id):
 def detalle_oferta(request, oferta_id):
     oferta = get_object_or_404(OfertaLaboral, id=oferta_id)
     return render(request, "ofertas_laborales/detalle_oferta.html", {"oferta": oferta})
+
+# POSTULAR A OFERTA LABORAL
+@login_required
+@role_required("candidato")
+def postular(request, oferta_id):
+    try:
+        # Obtener la oferta
+        oferta = get_object_or_404(OfertaLaboral, id=oferta_id)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error al obtener la oferta: {str(e)}'})
+
+    candidato = request.user.perfil_candidato
+
+    # Verificar si ya está postulado
+    try:
+        if Postulacion.objects.filter(candidato=candidato, oferta=oferta).exists():
+            return JsonResponse({'success': False, 'message': 'Ya te has postulado a esta oferta.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error al verificar postulación: {str(e)}'})
+
+    # Verificar el estado de la oferta
+    try:
+        if oferta.estado == "cerrada":
+            return JsonResponse({'success': False, 'message': 'La oferta se encuentra cerrada.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error al verificar postulación: {str(e)}'})    
+
+    # Crear la postulación
+    try:
+        reclutador = oferta.reclutador  # Asumimos que la oferta tiene un reclutador asignado
+        postulacion = Postulacion.objects.create(
+            candidato=candidato,
+            oferta=oferta,
+            reclutador=reclutador
+        )
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': f'Error al guardar la postulación: {str(e)}'})

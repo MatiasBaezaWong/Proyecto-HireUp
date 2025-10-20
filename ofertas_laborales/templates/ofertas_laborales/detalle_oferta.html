@@ -1,15 +1,81 @@
 {% extends "ofertas_laborales/base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>{{ oferta.titulo }}</h2>
-    <p><strong>Obra:</strong> {{ oferta.obra }}</p>
-    <p><strong>Cargo:</strong> {{ oferta.cargo }}</p>
-    <p><strong>Estado:</strong> {{ oferta.estado|capfirst }}</p>
-    <p><strong>Fecha de publicación:</strong> {{ oferta.fecha_publicacion|date:"d/m/Y" }}</p>
-    <p><strong>Descripción:</strong> {{ oferta.descripcion }}</p>
-    <p><strong>Requisitos:</strong> {{ oferta.requisitos }}</p>
+<div class="container mt-5">
 
-    <a href="{% url 'ofertas_laborales:vista_candidato' %}" class="btn btn-secondary mt-3">Volver</a>
+    <!-- Encabezado -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-dark">{{ oferta.titulo }}</h2>
+        <div class="border-bottom border-3 border-success mx-auto" style="width: 100px;"></div>
+    </div>
+
+    <!-- Card principal -->
+    <div class="card shadow-lg border-0 rounded-4 mx-auto" style="max-width: 700px;">
+        <div class="card-body p-4">
+            <div class="mb-3">
+                <p class="mb-2"><strong class="text-success">Obra:</strong> {{ oferta.obra }}</p>
+                <p class="mb-2"><strong class="text-success">Ubicación:</strong> {{ oferta.ubicacion }}</p>
+                <p class="mb-2"><strong class="text-success">Cargo:</strong> {{ oferta.cargo }}</p>
+                <p class="mb-2">
+                    <strong class="text-success">Estado:</strong>
+                    {% if oferta.estado == "abierta" %}
+                        <span class="badge border border-success text-success px-3 py-2">Abierta</span>
+                    {% else %}
+                        <span class="badge border border-danger text-danger px-3 py-2">Cerrada</span>
+                    {% endif %}                    
+                </p>
+                <p class="mb-2"><strong class="text-success">Fecha de publicación:</strong> {{ oferta.fecha_publicacion|date:"d/m/Y" }}</p>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mt-4">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Descripción</h5>
+                <p class="text-muted">{{ oferta.descripcion }}</p>
+            </div>
+
+            <!-- Requisitos -->
+            <div class="mt-4">
+                <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Requisitos</h5>
+                <p class="text-muted">{{ oferta.requisitos }}</p>
+            </div>
+
+            <!-- Botónes -->
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" onclick="postular()"><i class="bi bi-cursor me-2"></i>Postular</button>
+                <a href="{% url 'ofertas_laborales:vista_candidato' %}" 
+                   class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    function postular() {
+        console.log('Botón postular presionado');
+        fetch("{% url 'ofertas_laborales:postular' oferta.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                'oferta_id': {{ oferta.id }},
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);  // Ver respuesta
+            if (data.success) {
+                alert("Postulación realizada con éxito!");
+            } else {
+                alert(data.message || "Hubo un error al postularse.");
+            }
+        })
+        .catch(error => {
+            alert("Hubo un error al realizar la postulación.");
+        });
+    }
+</script>
 {% endblock %}
