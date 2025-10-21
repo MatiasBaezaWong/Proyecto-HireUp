@@ -69,5 +69,80 @@ body {
   box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
 }
 
+/* RESPONSIVE */
+@media (max-width: 575.98px) {
+
+  /* Navbar */
+  .navbar .navbar-brand {
+    font-size: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .hireup-navbar .nav-link {
+    text-align: center;
+    padding: 0.75rem 0;
+  }
+
+  /* Cards */
+  .card-oferta {
+    margin-bottom: 1rem;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-oferta h4 {
+    font-size: 1rem;
+  }
+
+  .card-oferta p {
+    font-size: 0.9rem;
+  }
+
+  .col-md-3 {
+    padding-top: 20px;
+  }
+
+  /* Botones */
+  .btn-outline-success {
+    font-size: 0.9rem;
+    width: 100%;
+  }
+}
+
+/* Pantallas entre 576px y 991px */
+@media (min-width: 576px) and (max-width: 991.98px) {
+
+  .hireup-navbar .navbar-brand {
+    font-size: 1.1rem;
+  }
+
+  .card-oferta {
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-outline-success {
+    width: 99%;
+  }
+
+  .col-md-3 {
+    padding-top: 20px;
+  }
+
+  .card-oferta h4 {
+    font-size: 1.1rem;
+  }
+
+  .card-oferta p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Pantallas mayores a 1200px */
+@media (min-width: 1200px) {
+  .card-oferta {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+}
+
 
 
