@@ -16,6 +16,7 @@
                 <p class="mb-2"><strong class="text-success">Obra:</strong> {{ oferta.obra }}</p>
                 <p class="mb-2"><strong class="text-success">Ubicación:</strong> {{ oferta.ubicacion }}</p>
                 <p class="mb-2"><strong class="text-success">Cargo:</strong> {{ oferta.cargo }}</p>
+                <p class="mb-2"><strong class="text-success">Sueldo:</strong> ${{ oferta.salario_estimado|floatformat:0 }}</p>
                 <p class="mb-2">
                     <strong class="text-success">Estado:</strong>
                     {% if oferta.estado == "abierta" %}

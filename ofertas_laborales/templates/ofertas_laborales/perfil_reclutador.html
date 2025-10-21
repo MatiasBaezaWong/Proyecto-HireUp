@@ -1,12 +1,24 @@
 {% extends "ofertas_laborales/base.html" %}
 
 {% block content %}
-<h2>Mi Perfil</h2>
-<ul class="list-group">
-  <li class="list-group-item"><strong>Nombre:</strong> {{ reclutador.nombre }} {{ reclutador.apellido }}</li>
-  <li class="list-group-item"><strong>RUT:</strong> {{ reclutador.rut }}</li>
-  <li class="list-group-item"><strong>Area:</strong> {{ reclutador.area }}</li>
-  <li class="list-group-item"><strong>Email:</strong> {{ reclutador.usuario.email }}</li>
-</ul>
-<a class="btn btn-success" href="{% url 'ofertas_laborales:vista_candidato' %}">Volver</a>
+<div class="container mt-5">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-dark">Mi Perfil</h2>
+    <div class="border-bottom border-3 border-success mx-auto" style="width: 80px;"></div>
+  </div>
+  <div id="perfil-info" class="card shadow-lg border-0 rounded-4 mb-4">
+          <div class="card-body">
+              <ul class="list-group list-group-flush mb-3">
+                  <li class="list-group-item"><strong>Nombre:</strong> {{ request.user.perfil_reclutador.nombre }} {{ request.user.perfil_reclutador.apellido }}</li>
+                  <li class="list-group-item"><strong>Correo:</strong> {{ request.user.email }}</li>
+                  <li class="list-group-item"><strong>RUT:</strong> {{ request.user.perfil_reclutador.rut }}</li>
+                  <li class="list-group-item"><strong>Teléfono de contacto:</strong> {{ request.user.perfil_reclutador.telefono }}</li>
+              </ul>
+              <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">   
+                <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-outline-success px-4 shadow-sm">
+                <i class="bi bi-arrow-left me-1"></i>Volver</a>
+              </div> 
+          </div>
+  </div>
+</div>
 {% endblock %}

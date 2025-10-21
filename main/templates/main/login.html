@@ -11,21 +11,6 @@
   <main class="container">
     <div class="login-card">    
       <h1>Inicio de Sesión</h1>
-
-      <!-- Errores del formulario
-      {% if form.errors %}
-        <div class="alert alert-danger">
-          <h4>⚠️ Error de autenticación</h4>
-          <ul>
-            {% for field, errors in form.errors.items %}
-              {% for error in errors %}
-                <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
-              {% endfor %}
-            {% endfor %}
-          </ul>
-        </div>
-      {% endif %} -->
-
       <!-- Mensajes de Django -->
       {% if messages %}
         {% for m in messages %}

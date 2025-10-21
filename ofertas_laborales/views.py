@@ -80,7 +80,7 @@ def perfil_candidato(request):
 @login_required
 @role_required("reclutador")
 def perfil_reclutador(request):
-    reclutador = request.user.reclutador
+    reclutador = request.user.perfil_reclutador
     return render(request, "ofertas_laborales/perfil_reclutador.html", {"reclutador": reclutador})
 
 # CREACION OFERTA LABORAL (SOLO PARA RECLUTADORES)

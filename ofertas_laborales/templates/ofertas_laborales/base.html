@@ -27,7 +27,13 @@
           <i class="bi bi-person-circle me-2"></i>  {{ request.user.username }}
         </a>
         <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" href="{% url 'ofertas_laborales:perfil_candidato' %}">Mi perfil</a></li>
+          <li>
+            {% if request.user.rol == 'candidato' %}
+              <a class="dropdown-item" href="{% url 'ofertas_laborales:perfil_candidato' %}">Mi Perfil</a>
+            {% elif request.user.rol == 'reclutador' %}
+              <a class="dropdown-item" href="{% url 'ofertas_laborales:perfil_reclutador' %}">Mi Perfil</a>
+            {% endif %}
+          </li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item text-danger" href="{% url 'main:logout' %}">Cerrar sesión</a></li>
         </ul>
