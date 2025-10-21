@@ -34,6 +34,11 @@
               <a class="dropdown-item" href="{% url 'ofertas_laborales:perfil_reclutador' %}">Mi Perfil</a>
             {% endif %}
           </li>
+          <li>
+            {% if request.user.rol == 'candidato' %}
+              <a class="dropdown-item" href="{% url 'ofertas_laborales:listar_postulaciones' %}">Mis Postulaciones</a>
+            {% endif %}  
+          </li>
           <li><hr class="dropdown-divider"></li>
           <li><a class="dropdown-item text-danger" href="{% url 'main:logout' %}">Cerrar sesión</a></li>
         </ul>

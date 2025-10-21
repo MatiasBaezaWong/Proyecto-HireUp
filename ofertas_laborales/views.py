@@ -179,3 +179,18 @@ def postular(request, oferta_id):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'Error al guardar la postulación: {str(e)}'})
+
+# LISTAR POSTULACIONES
+@login_required
+@role_required("candidato")
+def listar_postulaciones(request):
+    candidato = request.user.perfil_candidato
+    postulaciones = Postulacion.objects.filter(candidato=candidato).select_related("oferta", "reclutador")
+
+    estado = request.GET.get("estado")
+    if estado:
+        postulaciones = postulaciones.filter(estado=estado)
+
+    return render(request, "ofertas_laborales/mis_postulaciones.html", {
+        "postulaciones": postulaciones
+    })        

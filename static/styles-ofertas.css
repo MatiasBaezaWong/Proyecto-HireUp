@@ -69,6 +69,196 @@ body {
   box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
 }
 
+/* MIS POSTULACIONES */
+/* ========== CONTENEDOR PRINCIPAL ========== */
+.postulaciones-container {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.postulaciones-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+/* ========== FILTRO SUPERIOR ========== */
+.filtro-form {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filtro-form label {
+  font-weight: 500;
+  color: #333;
+}
+
+.filtro-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d1d1;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filtro-select:focus {
+  outline: none;
+  border-color: #27ae60;
+  box-shadow: 0 0 6px rgba(39, 174, 96, 0.3);
+}
+
+/* ========== TABLA DE POSTULACIONES ========== */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+}
+
+.tabla-postulaciones {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.tabla-postulaciones th {
+  background-color: #27ae60;
+  color: #fff;
+  text-align: left;
+  padding: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tabla-postulaciones td {
+  padding: 0.85rem;
+  border-bottom: 1px solid #eaeaea;
+  vertical-align: middle;
+}
+
+.tabla-postulaciones tr:hover {
+  background-color: #f4f5f5;
+}
+
+/* ========== ESTADOS (BADGES) ========== */
+.badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 1rem;
+  font-weight: 500;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.badge-pendiente {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.badge-aprobada {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge-rechazada {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* ========== BOTONES ========== */
+.btn-ver {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #27ae60;
+  border-radius: 0.5rem;
+  color: #27ae60;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.btn-ver:hover {
+  background-color: #27ae60;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(39, 174, 96, 0.4);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* 📱 Móviles (reformateamos la tabla como tarjetas) */
+@media (max-width: 600px) {
+  .postulaciones-container {
+    padding: 1.25rem;
+  }
+
+  .filtro-form {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .filtro-select {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* 🔹 Tabla convertida a cards */
+  .tabla-postulaciones,
+  .tabla-postulaciones thead,
+  .tabla-postulaciones tbody,
+  .tabla-postulaciones th,
+  .tabla-postulaciones td,
+  .tabla-postulaciones tr {
+    display: block;
+    width: 100%;
+  }
+
+  .tabla-postulaciones thead {
+    display: none;
+  }
+
+  .tabla-postulaciones tr {
+    background: #fff;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 1rem;
+  }
+
+  .tabla-postulaciones td {
+    border: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    font-size: 0.9rem;
+  }
+
+  .tabla-postulaciones td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #333;
+  }
+
+  .btn-ver {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+}
+
+
+
+
 /* RESPONSIVE */
 @media (max-width: 575.98px) {
 

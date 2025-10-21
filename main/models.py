@@ -89,8 +89,6 @@ class OfertaLaboral(models.Model):
     ESTADOS = [
         ("abierta", "Abierta"),
         ("cerrada", "Cerrada"),
-        ("pendiente", "Pendiente"),
-        ("aprobada", "Aprobada"),
     ]
 
     titulo = models.CharField(max_length=50)

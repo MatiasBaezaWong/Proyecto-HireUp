@@ -1,0 +1,61 @@
+{% extends "ofertas_laborales/base.html" %}
+
+{% block content %}
+<main class="container postulaciones-container">
+  <h2>Mis Postulaciones</h2>
+
+  <form method="get" class="filtro-form">
+    <label for="select">Filtrar</label>
+    <select name="estado" id="select" onchange="this.form.submit()" class="filtro-select">
+      <option value="Todas">Todas</option>
+      <option value="pendiente">Pendiente</option>
+      <option value="aprobada">Aprobada</option>
+      <option value="rechazada">Rechazada</option>
+    </select>
+  </form>
+
+  {% if postulaciones %}
+  <div class="table-wrapper">
+    <table class="tabla-postulaciones">
+      <thead>
+        <tr>
+          <th>Oferta</th>
+          <th>Reclutador</th>
+          <th>Fecha de Postulación</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in postulaciones %}
+        <tr>
+          <td data-label="Oferta">{{ p.oferta.titulo }}</td>
+          <td data-label="Reclutador">{{ p.reclutador.nombre }} {{ p.reclutador.apellido }}</td>
+          <td data-label="Fecha de Postulacion">{{ p.fecha|date:"d/m/Y" }}</td>
+          <td data-label="Estado">
+            {% if p.estado == "pendiente" %}
+              <span class="badge badge-pendiente">{{ p.estado|capfirst }}</span>
+            {% elif p.estado == "aprobada" %}
+              <span class="badge badge-aprobada">{{ p.estado|capfirst }}</span>
+            {% else %}
+              <span class="badge badge-rechazada">{{ p.estado|capfirst }}</span>
+            {% endif %}
+          </td>
+          <td data-label="Acciones">
+            {% if p.entrevistas.exists %}
+              <a href="#" class="btn-ver">Ver Entrevista</a>
+            {% else %}
+              <span class="text-muted">Sin entrevistas programadas</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="text-muted">Aún no has realizado postulaciones.</p>
+  {% endif %}
+</main>
+
+{% endblock %}
