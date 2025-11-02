@@ -6,9 +6,7 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <div class="d-flex justify-content-center mt-3">
-                    <button type="submit" class="btn btn-success px-4">Publicar</button>    
-                </div>
+                <button type="submit">Crear Oferta</button>
             </form>
         </div>
         <br>

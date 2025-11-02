@@ -2,40 +2,173 @@
 
 {% block content %}    
         <div class="container mt-4">
-            <h2 class="mb-4 text-center">Ofertas Laborales Disponibles</h2>
-            {% if ofertas %}
-                {% for oferta in ofertas %}
-                <div class="card-oferta mb-3 p-4 bg-white rounded-4">
-                    <div class="row g-0">
-                        <!-- Columna izquierda -->
-                        <div class="col-md-9">
-                            <p class="text-muted small mb-1">Publicado el día {{ oferta.fecha_publicacion|date:"d/m/Y" }}</p>
-                            <h4 class="fw-bold mb-1">{{ oferta.titulo }}</h4>
-                            <p class="mb-2">{{ oferta.obra }}</p>
-                            <p class="text-secondary mb-3">{{ oferta.descripcion|truncatechars:220 }}</p>
-                            <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" 
-                            class="btn btn-outline-success btn-sm rounded-pill px-3">
-                            Más información
-                            </a>
+            <div class="row">
+                <!-- FILTROS -->
+                <aside class="col-lg-3 col-md-4 mb-4 width-100">
+                <!-- Filtros colapsables en móvil -->
+                <button class="btn btn-success w-100 d-md-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
+                    <i class="bi bi-funnel"></i> Mostrar / Ocultar Filtros
+                </button>
+
+                <div class="collapse d-md-block" id="filtrosCollapse">
+                    <div class="card filtros-card p-3">
+                    <h5 class="mb-3 text-center fw-bold text-success">
+                        <i class="bi bi-funnel"></i> Filtros
+                    </h5>
+
+                    <form method="get">
+                        <div class="mb-3">
+                            <label for="keyword" class="form-label fw-semibold">Búsqueda por palabra clave</label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="keyword" 
+                                name="keyword" 
+                                placeholder="Ej: Ingeniero, Operario, Técnico..." 
+                                value="{{ request.GET.keyword }}">
                         </div>
 
-                        <!-- Columna derecha -->
-                        <div class="col-md-3 d-flex flex-column justify-content-center align-items-center border-start">
-                            <p class="fw-semibold mb-0 text-center"><i class="bi bi-geo-alt m-2"></i>{{ oferta.ubicacion }}</p>
-                            <br>
-                            {% if oferta.estado == "abierta" %}
-                                <span class="badge bg-light text-success border border-success rounded-pill">{{ oferta.estado|capfirst }}</span>
-                            {% else %}
-                                <span class="badge bg-light text-danger border border-danger rounded-pill">Cerrada</span>  
-                            {% endif %}      
+                        <div class="mb-3">
+                            <label for="obra" class="form-label fw-semibold">Obra</label>
+                            <select class="form-select" id="obra" name="obra">
+                                <option value="">Todas</option>
+                                {% for o in obras %}
+                                    <option value="{{ o.nombre }}" 
+                                            {% if request.GET.obra == o.nombre %}selected{% endif %}>
+                                        {{ o.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
                         </div>
+
+                        <div class="mb-3">
+                            <label for="ubicacion" class="form-label fw-semibold">Ubicación</label>
+                            <select class="form-select" id="ubicacion" name="ubicacion">
+                                <option value="">Todas</option>
+                                {% for comuna in comunas %}
+                                    <option value="{{ comuna.nombre }}"
+                                        {% if request.GET.ubicacion == comuna.nombre %}selected{% endif %}>
+                                        {{ comuna.nombre }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="experiencia" class="form-label fw-semibold">Experiencia deseada (años)</label>
+                            <input type="number" class="form-control" id="experiencia" name="experiencia"
+                                placeholder="Ej: 2" value="{{ request.GET.experiencia }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="area" class="form-label fw-semibold">Área</label>
+                            <select class="form-select" id="area" name="area">
+                                <option value="">Todas</option>
+                                {% for area in areas %}
+                                    <option value="{{ area }}" {% if request.GET.area == area %}selected{% endif %}>
+                                        {{ area|capfirst }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2 mt-3">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-filter"></i> Aplicar Filtros
+                            </button>
+                            <a href="{% url 'ofertas_laborales:vista_candidato' %}" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-counterclockwise"></i> Limpiar Filtros
+                            </a>
+                        </div>
+                    </form>
                     </div>
                 </div>
-                {% endfor %}
-            {% else %}
-                <div class="alert alert-warning text-center">
-                Aún no has publicado ninguna oferta laboral.
+                </aside>
+                <!-- OFERTAS -->
+                <div class="col-12 col-lg-9">
+                    <div class="row">
+                        {% for oferta in ofertas %}
+                        <div class="col-12 mb-4">
+                            <div class="card-oferta p-4">
+                                <div class="d-flex flex-column flex-md-row align-items-start">
+                                    <div class="col-md-9">
+                                        <p class="text-muted small mb-1">Publicado el día {{ oferta.fecha_publicacion|date:"d/m/Y" }}</p>
+                                        <h4 class="fw-bold mb-1">{{ oferta.titulo }}</h4>
+                                        <p class="mb-2">{{ oferta.obra }}</p>
+                                        <p class="text-secondary mb-3">{{ oferta.descripcion|truncatechars:220 }}</p>
+                                        <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" 
+                                        class="btn btn-outline-success btn-sm rounded-pill px-3">
+                                        Más información
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 d-flex flex-column justify-content-center align-items-center border-start">
+                                        <p class="fw-semibold mb-0 text-center"><i class="bi bi-geo-alt m-2"></i>{{ oferta.obra.comuna }}, {{ oferta.obra.ciudad }}</p>
+                                        <br>
+                                        {% if oferta.estado == "abierta" %}
+                                        <span class="badge bg-light text-success border border-success rounded-pill">{{ oferta.estado|capfirst }}</span>
+                                        {% else %}
+                                        <span class="badge bg-light text-danger border border-danger rounded-pill">Cerrada</span>  
+                                        {% endif %}      
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-warning text-center">
+                            No hay ofertas laborales disponibles.
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
+            </div>
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Paginación" class="mt-5">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Botón anterior -->
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link hireup-page" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                        &laquo; Anterior
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link hireup-disabled">&laquo; Anterior</span>
+                    </li>
+                    {% endif %}
+
+                    <!-- Números de página -->
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                        <span class="page-link hireup-active">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                        <li class="page-item">
+                        <a class="page-link hireup-page" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ num }}">
+                            {{ num }}
+                        </a>
+                        </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    <!-- Botón siguiente -->
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link hireup-page" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">
+                        Siguiente &raquo;
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link hireup-disabled">Siguiente &raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
             {% endif %}
         </div>
 {% endblock %}

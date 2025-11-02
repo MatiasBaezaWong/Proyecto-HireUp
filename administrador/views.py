@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.contrib import messages
 
-from .forms import RegistroReclutadorForm, EditarReclutadorForm, EditarCandidatoForm
-from main.models import Usuario, Reclutador, Candidato
+from .forms import RegistroReclutadorForm, EditarReclutadorForm, EditarCandidatoForm, ObraForm
+from main.models import Usuario, Reclutador, Candidato, Obra
 
 # Create your views here.
 
@@ -118,6 +118,34 @@ def eliminar_candidato(request, pk):
         return redirect("administrador:portal_administrador")
 
     return redirect("administrador:portal_administrador")
+
+@login_required
+def gestionar_obras(request):
+    if request.user.rol != "administrador":
+        return HttpResponseForbidden("Acceso denegado.")
+
+    obras = Obra.objects.select_related("comuna__ciudad__region").all()
+
+    return render(request, "administrador/gestionar_obras.html", {
+        "obras": obras
+    })
+
+
+@login_required
+def crear_obra(request):
+    if request.user.rol != "administrador":
+        return HttpResponseForbidden("Acceso denegado.")
+
+    if request.method == "POST":
+        form = ObraForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Obra registrada correctamente.")
+            return redirect("administrador:gestionar_obras")
+    else:
+        form = ObraForm()
+
+    return render(request, "administrador/crear_obra.html", {"form": form})    
 
 # VOLVER AL HOME
 def volver_home(request):

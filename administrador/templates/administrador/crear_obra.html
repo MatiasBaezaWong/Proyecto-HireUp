@@ -1,0 +1,13 @@
+{% extends 'administrador/base.html' %}
+{% block content %}
+    <main class="container">
+    <h2>Registrar Nueva Obra</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Guardar Obra</button>
+        <a href="{% url 'administrador:gestionar_obras' %}" class="btn btn-secondary">Volver</a>
+    </form>
+    </main>
+{% endblock %}

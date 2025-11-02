@@ -1,0 +1,57 @@
+{% extends "ofertas_laborales/base.html" %}
+
+{% block content %}
+    <main class="container py-5">
+    <h2 class="fw-bold text-center mb-4">Detalles de Entrevista</h2>
+
+    <div class="card shadow-sm p-4 rounded-4 border-0">
+        <div class="mb-4">
+        <h5 class="fw-bold text-success">Información del Candidato</h5>
+        <p><strong>Nombre:</strong> {{ entrevista.candidato.nombre }} {{ entrevista.candidato.apellido }}</p>
+        <p><strong>Email:</strong> {{ entrevista.candidato.usuario.email }}</p>
+        <p><strong>Oferta:</strong> {{ entrevista.postulacion.oferta.titulo }}</p>
+        <p><strong>Reclutador:</strong> {{ entrevista.reclutador.nombre }} {{ entrevista.reclutador.apellido }}</p>
+        </div>
+
+        <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+            <label class="form-label">Fecha</label>
+            {{ form.fecha }}
+            </div>
+            <div class="col-md-6 mb-3">
+            <label class="form-label">Hora</label>
+            {{ form.hora }}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+            <label class="form-label">Modalidad</label>
+            {{ form.modalidad }}
+            </div>
+            <div class="col-md-6 mb-3">
+            <label class="form-label">Resultado</label>
+            {{ form.resultado }}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Comentarios</label>
+            {{ form.comentarios }}
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 mt-2">
+            <i class="bi bi-save"></i> Guardar Cambios
+        </button>
+        </form>
+
+        <div class="text-center mt-4">
+        <a href="{% url 'ofertas_laborales:ver_perfil_candidato' entrevista.postulacion.oferta.id %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver a Postulaciones
+        </a>
+        </div>
+    </div>
+    </main>
+{% endblock %}

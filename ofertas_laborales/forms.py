@@ -2,7 +2,7 @@ import re
 from django.core.exceptions import ValidationError
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from main.models import Candidato, Usuario, OfertaLaboral
+from main.models import Candidato, Usuario, Region, Ciudad, Comuna, Obra, OfertaLaboral, Entrevista
 
 class EditarCandidatoForm(forms.ModelForm):
     
@@ -87,27 +87,48 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 
 #Registro Ofertas Laborales
 class CrearOfertaForm(forms.ModelForm):
+
+    obra = forms.ModelChoiceField(
+        queryset=Obra.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Obra"
+    )
+
     class Meta:
         model = OfertaLaboral
         fields = [
             "titulo",
             "descripcion",
             "requisitos",
+            "experiencia_minima",
             "obra",
             "cargo",
             "tipo_contrato",
-            "ubicacion",
             "salario_estimado",
             "estado",
+            "limite_postulaciones",
         ]
         widgets = {
             "titulo": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Técnico en Ascensores"}),
             "descripcion": forms.Textarea(attrs={"class": "form-control", "rows": 4, "placeholder": "Describe la oferta..."}),
             "requisitos": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Ej. Certificación SEC, experiencia mínima 2 años..."}),
-            "obra": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Torre Costanera"}),
+            "experiencia_minima": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Ej. 2 años minimo"}),
             "cargo": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Técnico en Instalación"}),
             "tipo_contrato": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Plazo fijo o Indefinido"}),
-            "ubicacion": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Santiago, Chile"}),
             "salario_estimado": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Ej. 850000"}),
             "estado": forms.Select(attrs={"class": "form-control"}),
-        }  
+            "limite_postulaciones": forms.NumberInput(attrs={"class": "form-control", "placeholder": "Maximo de postulaciones"}),
+        }   
+
+#REGISTRO ENTREVISTA
+class EntrevistaForm(forms.ModelForm):
+    class Meta:
+        model = Entrevista
+        fields = ["fecha", "hora", "modalidad", "comentarios", "resultado"]
+        widgets = {
+            "fecha": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "hora": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+            "modalidad": forms.Select(attrs={"class": "form-select"}),
+            "comentarios": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "resultado": forms.Select(attrs={"class": "form-select"}),
+        }          

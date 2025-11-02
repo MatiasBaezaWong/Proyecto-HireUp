@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'main',
+    'main.apps.MainConfig',
     'ofertas_laborales',
     'administrador',
 ]
@@ -56,6 +56,14 @@ MEDIA_ROOT = BASE_DIR / "media"
 LOGIN_URL = "main:login"
 LOGIN_REDIRECT_URL = "/main/redirigir/"
 LOGOUT_REDIRECT_URL = "main"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "hireup.oficial@gmail.com"
+EMAIL_HOST_PASSWORD = "tcps djbd dpbk cdry"
+DEFAULT_FROM_EMAIL = "HireUp <hireup.oficial@gmail.com>"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,7 +104,7 @@ WSGI_APPLICATION = 'hireup.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+       'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'HireUp_DB',
         "NAME": "postgres",
         "USER": "postgres.aevbwiroyfozpstpcxdw",

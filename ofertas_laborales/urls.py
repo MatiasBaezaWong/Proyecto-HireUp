@@ -15,4 +15,9 @@ urlpatterns = [
     path('detalle/<int:oferta_id>/', views.detalle_oferta, name='detalle_oferta'),
     path("postular/<int:oferta_id>/", views.postular, name="postular"),
     path("postulaciones/", views.listar_postulaciones, name="listar_postulaciones"),
+    path('oferta/<int:id_oferta>/postulaciones/', views.ver_postulaciones, name='ver_postulaciones'),
+    path('candidato/<int:id_candidato>/', views.ver_perfil_candidato, name='ver_perfil_candidato'),
+    path("postulacion/<int:postulacion_id>/entrevista/", views.agendar_entrevista, name="agendar_entrevista"),
+    path("entrevista/<int:entrevista_id>/", views.detalle_entrevista, name="detalle_entrevista"),
+    path("entrevistas/", views.panel_entrevistas, name="panel_entrevistas"),
 ]

@@ -14,8 +14,9 @@
         <div class="card-body p-4">
             <div class="mb-3">
                 <p class="mb-2"><strong class="text-success">Obra:</strong> {{ oferta.obra }}</p>
-                <p class="mb-2"><strong class="text-success">Ubicación:</strong> {{ oferta.ubicacion }}</p>
+                <p class="mb-2"><strong class="text-success">Ubicación:</strong> {{ oferta.comuna }}</p>
                 <p class="mb-2"><strong class="text-success">Cargo:</strong> {{ oferta.cargo }}</p>
+                <p class="mb-2"><strong class="text-success">Experiencia deseada:</strong> {{ oferta.experiencia_minima }} años</p>
                 <p class="mb-2"><strong class="text-success">Sueldo:</strong> ${{ oferta.salario_estimado|floatformat:0 }}</p>
                 <p class="mb-2">
                     <strong class="text-success">Estado:</strong>
@@ -40,11 +41,30 @@
                 <p class="text-muted">{{ oferta.requisitos }}</p>
             </div>
 
-            <!-- Botónes -->
+            <!-- Botones -->
+            <div class="text-center mt-4"></div>
+                {% if request.user.rol == 'candidato' %}
+                    <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" onclick="postular()"><i class="bi bi-cursor me-2"></i>Postular</button>
+                    <a href="{% url 'ofertas_laborales:vista_candidato' %}" class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
+                    </a>
+                {% elif request.user.rol == 'reclutador' %}
+                    <a href="{% url 'ofertas_laborales:editar_oferta' oferta.id %}" 
+                        class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-pencil-square me-1"></i> Editar
+                    </a>
+                    <a href="{% url 'ofertas_laborales:eliminar_oferta' oferta.id %}" 
+                        class="btn btn-outline-danger px-4 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-trash3 me-1"></i> Eliminar
+                    </a>
+                    <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
+                    </a>
+                {% endif %}
+            </div>
+
             <div class="text-center mt-4">
-                <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" onclick="postular()"><i class="bi bi-cursor me-2"></i>Postular</button>
-                <a href="{% url 'ofertas_laborales:vista_candidato' %}" 
-                   class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
+                <a href="{% url 'ofertas_laborales:vista_candidato' %}" class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
                     <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
                 </a>
             </div>

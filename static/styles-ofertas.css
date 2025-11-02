@@ -118,6 +118,68 @@ body {
   box-shadow: 0 0 6px rgba(39, 174, 96, 0.3);
 }
 
+/* === TARJETA DE FILTROS === */
+.filtros-card {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filtros-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(39, 174, 96, 0.15);
+}
+
+.filtros-card h5 {
+  color: #27ae60;
+  letter-spacing: 0.5px;
+}
+
+.filtros-card .form-label {
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.filtros-card .form-control,
+.filtros-card .form-select {
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filtros-card .form-control:focus,
+.filtros-card .form-select:focus {
+  border-color: #27ae60;
+  box-shadow: 0 0 8px rgba(39, 174, 96, 0.25);
+}
+
+/* === BOTONES DE FILTRO === */
+.filtros-card .btn-success {
+  background-color: #27ae60;
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.filtros-card .btn-success:hover {
+  background-color: #219150;
+  box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
+}
+
+.filtros-card .btn-outline-secondary {
+  font-weight: 500;
+  color: #555;
+  border-color: #ccc;
+}
+
+.filtros-card .btn-outline-secondary:hover {
+  background-color: #f4f5f5;
+  color: #000;
+}
+
+
 /* ========== TABLA DE POSTULACIONES ========== */
 .table-wrapper {
   overflow-x: auto;
@@ -192,6 +254,36 @@ body {
   box-shadow: 0 0 8px rgba(39, 174, 96, 0.4);
 }
 
+/* ========== PAGINACION ========== */
+
+.hireup-page {
+  color: #198754 !important;
+  border-color: #198754 !important;
+  background-color: white;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.hireup-page:hover {
+  background-color: #198754 !important;
+  color: white !important;
+}
+
+.hireup-active {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+  color: white !important;
+  font-weight: 600;
+}
+
+.hireup-disabled {
+  background-color: #f1f1f1;
+  color: #999;
+  border-color: #ddd;
+}
+
+
+
 /* ========== RESPONSIVE DESIGN ========== */
 
 /* 📱 Móviles (reformateamos la tabla como tarjetas) */
@@ -254,8 +346,11 @@ body {
     text-align: center;
     margin-top: 0.5rem;
   }
-}
 
+  .filtros-card {
+    margin-bottom: 1.5rem;
+  }
+}
 
 
 

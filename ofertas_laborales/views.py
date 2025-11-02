@@ -1,24 +1,75 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from main.decorators import role_required
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from .forms import EditarCandidatoForm, CustomPasswordChangeForm, CrearOfertaForm
-from main.models import OfertaLaboral, Postulacion
+from .forms import EditarCandidatoForm, CustomPasswordChangeForm, CrearOfertaForm, EntrevistaForm
+from main.models import OfertaLaboral, Postulacion, Ciudad, Obra, Candidato, Comuna, Entrevista
 from datetime import datetime
 from django.http import JsonResponse
+from django.db.models import Q
 
 # Create your views here.
 
 #VISTA CANDIDATO
 @role_required("candidato")
 def vista_candidato(request):
+
+    ofertas = OfertaLaboral.objects.select_related('obra', 'reclutador').all()
+    comunas = Comuna.objects.all().order_by("nombre").distinct()
+    obras = Obra.objects.all().order_by("nombre").distinct()
+    areas = OfertaLaboral.objects.values_list("area", flat=True).distinct()
+
+    # Obtener los parámetros del formulario
+    keyword = request.GET.get("keyword")
+    obra = request.GET.get("obra")
+    ubicacion = request.GET.get("ubicacion")
+    experiencia = request.GET.get("experiencia")
+    area = request.GET.get("area")
+
+    # Filtro dinámico
+    filtros = Q()
+
+    if keyword:
+        filtros &= (
+            Q(titulo__icontains=keyword)
+            | Q(cargo__icontains=keyword)
+            | Q(descripcion__icontains=keyword)
+            | Q(requisitos__icontains=keyword)
+        )
+    if obra:
+        filtros &= Q(obra__nombre__icontains=obra)
+    if ubicacion:
+        filtros &= (
+            Q(obra__comuna__nombre__icontains=ubicacion)
+            | Q(obra__comuna__ciudad__nombre__icontains=ubicacion)
+            | Q(obra__comuna__ciudad__region__nombre__icontains=ubicacion)
+        )
+    if experiencia:
+        try:
+            experiencia = int(experiencia)
+            filtros &= Q(experiencia_minima__lte=experiencia)
+        except ValueError:
+            pass
+    if area:
+        filtros &= Q(area__iexact=area)
+
+    # Aplicar los filtros
+    ofertas = ofertas.filter(filtros).distinct().order_by("-fecha_publicacion")
+
+    paginator = Paginator(ofertas, 4)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
     
-    ofertas = OfertaLaboral.objects.all().order_by('-fecha_publicacion')
     return render(request, "ofertas_laborales/ofertas_candidato.html", {
 
+    "page_obj": page_obj,
     "ofertas": ofertas,
-
+    "comunas": comunas,
+    "obras": obras,
+    "areas": areas,
+    "ofertas": page_obj,
 })
 
 #VISTA RECLUTADOR
@@ -102,7 +153,7 @@ def crear_oferta(request):
     else:
         form = CrearOfertaForm()
 
-    return render(request, "ofertas_laborales/crear_oferta.html", {"form": form})       
+    return render(request, "ofertas_laborales/crear_oferta.html", {"form": form})          
 
 #VOLVER A PAGINA HOME
 def volver_home(request):
@@ -180,7 +231,7 @@ def postular(request, oferta_id):
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'Error al guardar la postulación: {str(e)}'})
 
-# LISTAR POSTULACIONES
+# LISTAR POSTULACIONES (VISTA CANDIDATO)
 @login_required
 @role_required("candidato")
 def listar_postulaciones(request):
@@ -194,3 +245,100 @@ def listar_postulaciones(request):
     return render(request, "ofertas_laborales/mis_postulaciones.html", {
         "postulaciones": postulaciones
     })        
+
+# LISTAR POSTULACIONES (VISTA RECLUTADOR)
+@login_required
+def ver_postulaciones(request, id_oferta):
+    oferta = get_object_or_404(OfertaLaboral, id=id_oferta, reclutador=request.user.perfil_reclutador)
+    postulaciones = Postulacion.objects.filter(oferta=oferta).select_related("candidato")
+
+    return render(request, "ofertas_laborales/ver_postulaciones.html", {
+        "oferta": oferta,
+        "postulaciones": postulaciones,
+    })
+
+# VER EL PERFIL DEL CANDIDATO (VISTA RECLUTADOR)
+@login_required
+def ver_perfil_candidato(request, id_candidato):
+    # Solo los reclutadores pueden acceder
+    if not hasattr(request.user, "perfil_reclutador"):
+        return redirect("home")
+
+    candidato = get_object_or_404(Candidato, id=id_candidato)
+
+    # Buscar postulaciones del candidato (opcional, para contexto)
+    postulaciones = Postulacion.objects.filter(candidato=candidato)
+
+    return render(request, "ofertas_laborales/info_candidato.html", {
+        "candidato": candidato,
+        "postulaciones": postulaciones,
+    })  
+
+#AGENDAR ENTREVISTA
+def agendar_entrevista(request, postulacion_id):
+    postulacion = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
+
+    if request.method == "POST":
+        form = EntrevistaForm(request.POST)
+        if form.is_valid():
+            entrevista = form.save(commit=False)
+            entrevista.postulacion = postulacion
+            entrevista.save()
+            messages.success(request, "Entrevista agendada y correo enviado al candidato.")
+            return redirect("ofertas_laborales:ver_postulaciones", postulacion.oferta.id)
+    else:
+        form = EntrevistaForm()
+
+    return render(request, "ofertas_laborales/agendar_entrevista.html", {
+        "form": form,
+        "postulacion": postulacion,
+    }) 
+
+# DETALLE ENTREVISTA
+def detalle_entrevista(request, entrevista_id):
+    entrevista = get_object_or_404(Entrevista, id_entrevista=entrevista_id)
+    postulacion = entrevista.postulacion
+
+    if request.method == "POST":
+        form = EntrevistaForm(request.POST, instance=entrevista)
+        if form.is_valid():
+            form.save()  # ya actualiza el estado de la postulación automáticamente
+            messages.success(request, "Entrevista actualizada correctamente.")
+            return redirect("ofertas_laborales:ver_postulaciones", postulacion.oferta.id)
+    else:
+        form = EntrevistaForm(instance=entrevista)
+
+    return render(request, "ofertas_laborales/detalle_entrevista.html", {
+        "entrevista": entrevista,
+        "form": form,
+        "postulacion": postulacion,
+    }) 
+
+@login_required
+def panel_entrevistas(request):
+    # Obtener el reclutador autenticado
+    reclutador = getattr(request.user, "perfil_reclutador", None)
+    if not reclutador:
+        return render(request, "403.html", {"error": "Acceso no autorizado."})
+
+    # Filtros
+    filtro_resultado = request.GET.get("resultado")
+    filtro_fecha = request.GET.get("fecha")
+
+    entrevistas = Entrevista.objects.filter(reclutador=reclutador).select_related(
+        "candidato", "postulacion__oferta"
+    )
+
+    if filtro_resultado:
+        entrevistas = entrevistas.filter(resultado=filtro_resultado)
+
+    if filtro_fecha:
+        entrevistas = entrevistas.filter(fecha=filtro_fecha)
+
+    entrevistas = entrevistas.order_by("-fecha", "-hora")
+
+    return render(request, "ofertas_laborales/panel_entrevistas.html", {
+        "entrevistas": entrevistas,
+        "filtro_resultado": filtro_resultado,
+        "filtro_fecha": filtro_fecha,
+    })            

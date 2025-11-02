@@ -2,7 +2,7 @@ import re
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from main.models import Usuario, Reclutador, Candidato
+from main.models import Usuario, Reclutador, Candidato, Comuna, Obra
 
 class RegistroReclutadorForm(UserCreationForm):
     AREAS = [
@@ -12,7 +12,6 @@ class RegistroReclutadorForm(UserCreationForm):
         ("control de calidad", "Control de Calidad"),
         ("seguridad", "Seguridad"),
     ]
-    username = forms.CharField(label="Usuario", max_length=50)
     email = forms.EmailField(label="Correo")
     rut = forms.CharField(label="RUT", max_length=12)
     nombre = forms.CharField(label="Nombre", max_length=50)
@@ -22,7 +21,7 @@ class RegistroReclutadorForm(UserCreationForm):
 
     class Meta:
         model = Usuario
-        fields = ("username", "email", "password1", "password2")
+        fields = ("email", "password1", "password2")
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -165,3 +164,20 @@ class EditarCandidatoForm(forms.ModelForm):
             usuario.save()
             candidato.save()
         return candidato
+
+class ObraForm(forms.ModelForm):
+    comuna = forms.ModelChoiceField(
+        queryset=Comuna.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"}),
+        label="Comuna"
+    )
+
+    class Meta:
+        model = Obra
+        fields = ["nombre", "descripcion", "comuna", "fecha_inicio", "fecha_termino"]
+        widgets = {
+            "nombre": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Torre Costanera"}),
+            "descripcion": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "fecha_inicio": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "fecha_termino": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+        }    

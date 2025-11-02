@@ -1,0 +1,45 @@
+{% extends 'ofertas_laborales/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white text-center rounded-top">
+            <h3 class="mb-0">{{ candidato.nombre }} {{ candidato.apellido }}</h3>
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>RUT:</strong> {{ candidato.rut }}</p>
+                    <p><strong>Correo:</strong> {{ candidato.usuario.email }}</p>
+                    <p><strong>Teléfono:</strong> {{ candidato.telefono|default:"No registrado" }}</p>
+                    <p><strong>Dirección:</strong> {{ candidato.direccion|default:"No registrada" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Experiencia:</strong> {{ candidato.experiencia }} años</p>
+                    <p><strong>Descripción:</strong></p>
+                    <p class="text-muted">{{ candidato.descripcion|default:"Sin descripción" }}</p>
+                    <p>
+                        <strong>CV:</strong>
+                        {% if candidato.cv %}
+                            <a href="{{ candidato.cv.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-file-earmark-arrow-down"></i> Descargar CV
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No hay archivo</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center bg-light rounded-bottom">
+            <a href="{% url 'ofertas_laborales:agendar_entrevista' candidato.postulaciones.first.oferta.id %}" 
+               class="btn btn-secondary rounded-pill">
+                Agendar Entrevista
+            </a>
+            <a href="{% url 'ofertas_laborales:ver_postulaciones' candidato.postulaciones.first.oferta.id %}" 
+               class="btn btn-secondary rounded-pill">
+                <i class="bi bi-arrow-left-circle"></i> Volver
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

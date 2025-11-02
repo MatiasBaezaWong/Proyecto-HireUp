@@ -5,9 +5,9 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
 from .models import Usuario, Candidato
 
+
 class RegistroCandidatoForm(UserCreationForm):
     # Datos de usuario
-    username = forms.CharField(label="Usuario", max_length=50)
     email = forms.EmailField(label="Correo electrónico")
 
     # Datos de perfil candidato
@@ -22,9 +22,9 @@ class RegistroCandidatoForm(UserCreationForm):
 
     class Meta:
         model = Usuario
-        fields = ("username", "email", "password1", "password2")
+        fields = ("email", "password1", "password2")
 
-    #Validacion de unicidad
+    #VALIDACIONES
     def clean_username(self):
         username = self.cleaned_data["username"]
         if Usuario.objects.filter(username=username).exists():
@@ -44,6 +44,14 @@ class RegistroCandidatoForm(UserCreationForm):
         if Candidato.objects.filter(rut=rut).exists():
             raise ValidationError("Este RUT ya está registrado.")
         return rut
+
+    def clean(self):
+        cleaned_data = super().clean()
+        p1 = cleaned_data.get("password1")
+        p2 = cleaned_data.get("password2")
+        if p1 and p2 and p1 != p2:
+            raise ValidationError("Las contraseñas no coinciden.")
+        return cleaned_data    
 
     def save(self, commit=True):
         # Crear usuario con rol 'candidato'
@@ -74,5 +82,5 @@ class RegistroCandidatoForm(UserCreationForm):
 
 
 class LoginUsuarioForm(AuthenticationForm):
-    username = forms.CharField(label="Nombre de Usuario")
+    username = forms.EmailField(label="Correo electrónico")
     password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
