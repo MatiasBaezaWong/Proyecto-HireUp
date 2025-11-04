@@ -87,27 +87,39 @@
                 <!-- OFERTAS -->
                 <div class="col-12 col-lg-9">
                     <div class="row">
-                        {% for oferta in ofertas %}
+                        {% for oferta in page_obj|dictsortreversed:"fecha_publicacion" %}
                         <div class="col-12 mb-4">
-                            <div class="card-oferta p-4">
+                            <div class="card-oferta p-4 shadow-sm rounded-4 border-0 bg-white">
                                 <div class="d-flex flex-column flex-md-row align-items-start">
-                                    <div class="col-md-9">
-                                        <p class="text-muted small mb-1">Publicado el día {{ oferta.fecha_publicacion|date:"d/m/Y" }}</p>
-                                        <h4 class="fw-bold mb-1">{{ oferta.titulo }}</h4>
-                                        <p class="mb-2">{{ oferta.obra }}</p>
+                                    
+                                    <!-- Sección izquierda -->
+                                    <div class="col-12 col-md-9">
+                                        <p class="text-muted small mb-1">
+                                            <i class="bi bi-calendar-event me-1"></i> Publicado el {{ oferta.fecha_publicacion|date:"d/m/Y" }}
+                                        </p>
+                                        <h4 class="fw-bold mb-1 text-dark">{{ oferta.titulo }}</h4>
+                                        <p class="mb-2 text-secondary">{{ oferta.obra }}</p>
                                         <p class="text-secondary mb-3">{{ oferta.descripcion|truncatechars:220 }}</p>
+
                                         <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" 
                                         class="btn btn-outline-success btn-sm rounded-pill px-3">
-                                        Más información
+                                            Más información
                                         </a>
                                     </div>
-                                    <div class="col-md-3 d-flex flex-column justify-content-center align-items-center border-start">
-                                        <p class="fw-semibold mb-0 text-center"><i class="bi bi-geo-alt m-2"></i>{{ oferta.obra.comuna }}, {{ oferta.obra.ciudad }}</p>
-                                        <br>
+
+                                    <!-- Sección derecha (ubicación + estado) -->
+                                    <div class="col-12 col-md-3 d-flex flex-column justify-content-center align-items-center mt-3 mt-md-0 border-start border-md-start-1 border-0 border-md-start">
+                                        <p class="fw-semibold mb-2 text-center">
+                                            <i class="bi bi-geo-alt me-2"></i>{{ oferta.obra.direccion }}, {{ oferta.obra.comuna }}
+                                        </p>
                                         {% if oferta.estado == "abierta" %}
-                                        <span class="badge bg-light text-success border border-success rounded-pill">{{ oferta.estado|capfirst }}</span>
+                                            <span class="badge bg-light text-success border border-success rounded-pill">
+                                                {{ oferta.estado|capfirst }}
+                                            </span>
                                         {% else %}
-                                        <span class="badge bg-light text-danger border border-danger rounded-pill">Cerrada</span>  
+                                            <span class="badge bg-light text-danger border border-danger rounded-pill">
+                                                Cerrada
+                                            </span>  
                                         {% endif %}      
                                     </div>
                                 </div>
@@ -115,13 +127,13 @@
                         </div>
                         {% empty %}
                         <div class="col-12">
-                            <div class="alert alert-warning text-center">
-                            No hay ofertas laborales disponibles.
+                            <div class="alert alert-warning text-center shadow-sm rounded-4">
+                                <i class="bi bi-exclamation-triangle me-2"></i> No hay ofertas laborales disponibles.
                             </div>
                         </div>
                         {% endfor %}
                     </div>
-                </div>
+                </div> 
             </div>
             {% if page_obj.has_other_pages %}
             <nav aria-label="Paginación" class="mt-5">

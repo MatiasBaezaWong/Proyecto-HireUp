@@ -4,12 +4,29 @@
 
     <div class="container mt-5">
 
-        <!-- Botón principal -->
-        <div class="text-center mb-4">
-            <a href="{% url 'ofertas_laborales:crear_oferta' %}" class="btn btn-success px-4 py-2 shadow-sm rounded-3">
-                <i class="bi bi-plus-circle me-2"></i> Publicar Nueva Oferta
-            </a>
-        </div>
+        <!-- NAVEGABILIDAD -->
+        <div class="container my-4">
+            <div class="row g-2 g-md-3 justify-content-center text-center">
+                <div class="col-12 col-md-auto">
+                <a href="{% url 'ofertas_laborales:crear_oferta' %}" 
+                    class="btn btn-success px-4 py-2 shadow-sm rounded-3 w-100">
+                    <i class="bi bi-plus-circle me-2"></i> Publicar Nueva Oferta
+                </a>
+                </div>
+                <div class="col-12 col-md-auto">
+                <a href="{% url 'ofertas_laborales:panel_postulaciones' %}" 
+                    class="btn btn-success px-4 py-2 shadow-sm rounded-3 w-100">
+                    <i class="bi bi-list-check me-2"></i> Ver Panel de Postulaciones
+                </a>
+                </div>
+                <div class="col-12 col-md-auto">
+                <a href="{% url 'ofertas_laborales:panel_entrevistas' %}" 
+                    class="btn btn-success px-4 py-2 shadow-sm rounded-3 w-100">
+                    <i class="bi bi-person-video3 me-2"></i> Ver Panel de Entrevistas
+                </a>
+                </div>
+            </div>
+        </div>  
 
         <!-- Título -->
         <div class="text-center mb-4">
@@ -18,7 +35,70 @@
         </div>
 
         {% if ofertas %}
-            <!-- Tabla dentro de una card -->
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-body p-3 p-md-4">
+                <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Título</th>
+                        <th scope="col">Obra</th>
+                        <th scope="col">Cargo</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col" class="text-center">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for oferta in ofertas %}
+                    <tr>
+                        <td class="fw-semibold text-truncate" style="max-width: 160px;">
+                        {{ oferta.titulo }}
+                        </td>
+                        <td class="text-truncate" style="max-width: 120px;">
+                        {{ oferta.obra }}
+                        </td>
+                        <td>{{ oferta.cargo }}</td>
+                        <td>
+                        {% if oferta.estado == "abierta" %}
+                            <span class="badge border border-success text-success px-3 py-2">Abierta</span>
+                        {% elif oferta.estado == "cerrada" %}
+                            <span class="badge border border-danger text-danger px-3 py-2">Cerrada</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark px-3 py-2">
+                            {{ oferta.estado|capfirst }}
+                            </span>
+                        {% endif %}
+                        </td>
+                        <td>{{ oferta.fecha_publicacion|date:"d/m/Y" }}</td>
+                        <td class="text-center">
+                        <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
+                            <a href="{% url 'ofertas_laborales:ver_postulaciones' oferta.id %}" 
+                            class="btn btn-sm btn-outline-success shadow-sm rounded-pill">
+                            <i class="bi bi-people"></i> Postulaciones
+                            </a>
+                            <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" 
+                            class="btn btn-sm btn-outline-success shadow-sm rounded-pill">
+                            <i class="bi bi-eye"></i> Detalle
+                            </a>
+                        </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning text-center shadow-sm mt-4 rounded-3">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Aún no has publicado ninguna oferta laboral.
+            </div>
+            {% endif %}
+
+        <!--{% if ofertas %}
+             Tabla dentro de una card
             <div class="card shadow-lg border-0 rounded-4">
                 <div class="card-body p-4">
                     <div class="table-responsive">
@@ -51,11 +131,11 @@
                                         <td>{{ oferta.fecha_publicacion|date:"d/m/Y" }}</td>
                                         <td class="text-center">
                                             <a href="{% url 'ofertas_laborales:ver_postulaciones' oferta.id %}" 
-                                                class="btn btn-sm btn-outline-primary me-2 shadow-sm rounded-pill">
+                                                class="btn btn-sm btn-outline-success me-2 shadow-sm rounded-pill">
                                                     <i class="bi bi-people me-1"></i> Ver Postulaciones
                                             </a>
                                             <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" 
-                                                class="btn btn-sm btn-outline-primary me-2 shadow-sm rounded-pill">
+                                                class="btn btn-sm btn-outline-success me-2 shadow-sm rounded-pill">
                                                     <i class="bi bi-people me-1"></i> Detalle Oferta
                                             </a>
                                         </td>
@@ -71,15 +151,8 @@
                 <i class="bi bi-exclamation-triangle me-2"></i>
                 Aún no has publicado ninguna oferta laboral.
             </div>
-        {% endif %}
+        {% endif %}-->
 
-        <br>
-        <br>
-        <div class="text-center mb-4">
-            <a href="{% url 'ofertas_laborales:panel_entrevistas' %}" class="btn btn-success px-4 py-2 shadow-sm rounded-3">
-                <i class="bi bi-plus-circle me-2"></i> Ver panel de Entrevistas
-            </a>
-        </div>
     </div>
     
 {% endblock %}

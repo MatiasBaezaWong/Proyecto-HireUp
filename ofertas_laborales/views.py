@@ -7,8 +7,11 @@ from django.contrib.auth.decorators import login_required
 from .forms import EditarCandidatoForm, CustomPasswordChangeForm, CrearOfertaForm, EntrevistaForm
 from main.models import OfertaLaboral, Postulacion, Ciudad, Obra, Candidato, Comuna, Entrevista
 from datetime import datetime
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
+import requests
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 
@@ -56,7 +59,7 @@ def vista_candidato(request):
         filtros &= Q(area__iexact=area)
 
     # Aplicar los filtros
-    ofertas = ofertas.filter(filtros).distinct().order_by("-fecha_publicacion")
+    ofertas = ofertas.filter(filtros).distinct().order_by("-fecha_publicacion", "-id")
 
     paginator = Paginator(ofertas, 4)
     page_number = request.GET.get("page")
@@ -69,7 +72,6 @@ def vista_candidato(request):
     "comunas": comunas,
     "obras": obras,
     "areas": areas,
-    "ofertas": page_obj,
 })
 
 #VISTA RECLUTADOR
@@ -126,6 +128,50 @@ def perfil_candidato(request):
         "form": form,
         "pass_form": pass_form,
     })
+
+# DESCARGAR CV
+@login_required
+def descargar_cv(request, candidato_id):
+    try:
+        candidato = Candidato.objects.get(id=candidato_id)
+        if not candidato.cv:
+            raise Http404("No hay CV disponible")
+
+        response = requests.get(candidato.cv)
+        if response.status_code != 200:
+            raise Http404("Error al obtener el archivo desde Supabase")
+
+        filename = f"{candidato.nombre}_{candidato.apellido}_CV.pdf"
+        content_type = response.headers.get("Content-Type", "application/octet-stream")
+
+        download_response = HttpResponse(response.content, content_type=content_type)
+        download_response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return download_response
+
+    except Candidato.DoesNotExist:
+        raise Http404("Candidato no encontrado")   
+
+# DESCARGAR CV (VISTA RECLUTADOR)
+def descargar_cv_reclutador(request, candidato_id):
+    try:
+        candidato = Candidato.objects.get(id=candidato_id)
+        if not candidato.cv:
+            raise Http404("No hay CV disponible")
+
+        # Descargar desde Supabase
+        response = requests.get(candidato.cv)
+        if response.status_code != 200:
+            raise Http404("Error al obtener el archivo desde Supabase")
+
+        filename = f"{candidato.nombre}_{candidato.apellido}_CV.pdf"
+        content_type = response.headers.get("Content-Type", "application/pdf")
+
+        download_response = HttpResponse(response.content, content_type=content_type)
+        download_response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return download_response
+
+    except Candidato.DoesNotExist:
+        raise Http404("Candidato no encontrado")
 
 #PERFIL RECLUTADOR
 @login_required
@@ -295,8 +341,8 @@ def agendar_entrevista(request, postulacion_id):
     }) 
 
 # DETALLE ENTREVISTA
-def detalle_entrevista(request, entrevista_id):
-    entrevista = get_object_or_404(Entrevista, id_entrevista=entrevista_id)
+def detalle_entrevista(request, pk):
+    entrevista = get_object_or_404(Entrevista, id=pk)
     postulacion = entrevista.postulacion
 
     if request.method == "POST":
@@ -314,6 +360,36 @@ def detalle_entrevista(request, entrevista_id):
         "postulacion": postulacion,
     }) 
 
+# PANEL DE POSTULACIONES
+@login_required
+def panel_postulaciones(request):
+    # Obtener el reclutador logueado
+    reclutador = getattr(request.user, "perfil_reclutador", None)
+    if not reclutador:
+        return render(request, "403.html", {"error": "Acceso no autorizado."})
+
+    # Filtro por oferta laboral
+    oferta_id = request.GET.get("oferta")
+
+    # Obtener todas las ofertas del reclutador
+    ofertas_reclutador = OfertaLaboral.objects.filter(reclutador=reclutador)
+
+    # Filtrar postulaciones
+    postulaciones = Postulacion.objects.filter(oferta__reclutador=reclutador).select_related(
+        "candidato", "oferta"
+    )
+
+    if oferta_id:
+        postulaciones = postulaciones.filter(oferta__id=oferta_id)
+
+    postulaciones = postulaciones.order_by("-fecha")
+
+    return render(request, "ofertas_laborales/panel_postulaciones.html", {
+        "postulaciones": postulaciones,
+        "ofertas_reclutador": ofertas_reclutador,
+        "oferta_id": oferta_id,
+    })    
+
 @login_required
 def panel_entrevistas(request):
     # Obtener el reclutador autenticado
@@ -322,15 +398,12 @@ def panel_entrevistas(request):
         return render(request, "403.html", {"error": "Acceso no autorizado."})
 
     # Filtros
-    filtro_resultado = request.GET.get("resultado")
     filtro_fecha = request.GET.get("fecha")
 
     entrevistas = Entrevista.objects.filter(reclutador=reclutador).select_related(
         "candidato", "postulacion__oferta"
     )
 
-    if filtro_resultado:
-        entrevistas = entrevistas.filter(resultado=filtro_resultado)
 
     if filtro_fecha:
         entrevistas = entrevistas.filter(fecha=filtro_fecha)
@@ -339,6 +412,46 @@ def panel_entrevistas(request):
 
     return render(request, "ofertas_laborales/panel_entrevistas.html", {
         "entrevistas": entrevistas,
-        "filtro_resultado": filtro_resultado,
         "filtro_fecha": filtro_fecha,
-    })            
+    })    
+
+# REGISTRAR RESULTADO POSTULACION
+@login_required
+def cambiar_estado_postulacion(request, id_postulacion, nuevo_estado):
+    postulacion = get_object_or_404(Postulacion, id_postulacion=id_postulacion)
+
+    if postulacion.reclutador.usuario != request.user:
+        messages.error(request, "No tienes permiso para modificar esta postulación.")
+        return redirect("ofertas_laborales:vista_reclutador")
+
+    postulacion.estado = nuevo_estado
+    postulacion.save()
+
+    # Enviar correo al candidato
+    if postulacion.candidato and postulacion.candidato.usuario.email:
+        asunto = f"Resultado de tu postulación - HireUp"
+        if nuevo_estado == "aprobada":
+            mensaje = (
+                f"Hola {postulacion.candidato.nombre},\n\n"
+                f"¡Felicitaciones! Tu postulación a la oferta '{postulacion.oferta.titulo}' ha sido **aprobada**.\n\n"
+                f"Nos pondremos en contacto contigo para los próximos pasos.\n\n"
+                f"Saludos,\nEquipo de Reclutamiento HireUp"
+            )
+        else:
+            mensaje = (
+                f"Hola {postulacion.candidato.nombre},\n\n"
+                f"Lamentamos informarte que tu postulación a la oferta '{postulacion.oferta.titulo}' ha sido **rechazada**.\n\n"
+                f"Te invitamos a seguir postulando a nuevas oportunidades.\n\n"
+                f"Saludos,\nEquipo de Reclutamiento HireUp"
+            )
+
+        send_mail(
+            asunto,
+            mensaje,
+            settings.DEFAULT_FROM_EMAIL,
+            [postulacion.candidato.usuario.email],
+            fail_silently=True,
+        )
+
+    messages.success(request, f"Postulación marcada como {nuevo_estado}.")
+    return redirect("ofertas_laborales:ver_postulaciones", id_oferta=postulacion.oferta.id)            

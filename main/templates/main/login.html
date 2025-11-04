@@ -1,43 +1,53 @@
+{% extends 'main/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Ingreso al Portal</title>
-  <link rel="icon" href="{% static 'images/logo.ico' %}" type="image/x-icon">
-  <link rel="stylesheet" href="{% static 'styles.css' %}">
-</head>
-<body>
-  <main class="container">
-    <div class="login-card">    
-      <h1>Inicio de Sesión</h1>
-      <!-- Mensajes de Django -->
-      {% if messages %}
-        {% for m in messages %}
-          <div class="alert alert-{{ m.tags }}">{{ m }}</div>
-        {% endfor %}
-      {% endif %}
-
-      <!-- Formulario de login -->
-      <form method="POST" class="form-login">
-        {% csrf_token %}
-        <div class="form-group">
-          <input type="text" name="username" class="form-control" placeholder="Nombre de usuario o correo">
-        </div>
-        <div class="form-group">
-          <input type="password" name="password" class="form-control" placeholder="Contraseña">
-        </div>
-        <button type="submit" class="btn-login">Ingresar</button>
-      </form>
-
-      <div class="register-link">
-        <p>¿No tienes cuenta? <a href="{% url 'main:registro_candidato' %}">Regístrate aquí</a></p>
-      </div>
-      <div class="home-link">
-        <a href="{% url 'home' %}" class="btn btn-secondary">Volver al Inicio</a>
-      </div>
+{% block content %}
+<main class="container-login d-flex align-items-center justify-content-center min-vh-100">
+  <div class="login-card shadow-lg p-5 rounded-4 bg-white" style="max-width: 500px; width: 100%;">    
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-dark">Iniciar Sesion</h2>
+        <div class="border-bottom border-3 border-success mx-auto" style="width: 80px;"></div>
     </div>
-  </main>
-</body>
-</html>
+
+    <!-- Mensajes de Django -->
+    {% if messages %}
+      {% for m in messages %}
+        <div class="alert alert-{{ m.tags }} rounded-3">
+          {{ m }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Formulario de login -->
+    <form method="POST" class="needs-validation">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="id_username" class="form-label fw-semibold">Correo Electronico</label>
+        <input type="text" id="id_username" name="username" 
+               class="form-control form-control-lg rounded-3" 
+               placeholder="Ingrese su nombre de correo" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="id_password" class="form-label fw-semibold">Contraseña</label>
+        <input type="password" id="id_password" name="password" 
+               class="form-control form-control-lg rounded-3" 
+               placeholder="Ingrese su contraseña" required>
+      </div>
+
+      <button type="submit" class="btn btn-success w-100 fw-semibold shadow-sm">
+        <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar
+      </button>
+    </form>
+    <div class="text-center mt-4">
+      <p class="mb-2">¿No tienes cuenta?
+        <a href="{% url 'main:registro_candidato' %}" class="text-success fw-semibold text-decoration-none">Crea tu cuenta</a>
+      </p>
+      <a href="{% url 'home' %}" class="btn btn-outline-primary w-100 py-2 rounded-3">
+        <i class="bi bi-house-door me-2"></i> Volver al inicio
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}  
 

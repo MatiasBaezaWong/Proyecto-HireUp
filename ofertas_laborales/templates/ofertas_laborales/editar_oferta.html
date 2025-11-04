@@ -1,12 +1,26 @@
 {% extends 'ofertas_laborales/base.html' %}
 {% block content %}
 <div class="container mt-5">
-    <h2>Editar Oferta: {{ oferta.titulo }}</h2>
-    <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Guardar cambios</button>
-    <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-secondary">Cancelar</a>
-    </form>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-dark">Editar Oferta: {{ oferta.titulo }}</h2>
+        <div class="border-bottom border-3 border-success mx-auto" style="width: 90px;"></div>
+    </div>
+
+    <div class="card shadow p-4">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                <button type="submit" class="btn btn-success px-4 py-2 rounded-pill shadow-sm w-100 w-md-auto">
+                    <i class="bi bi-save me-2"></i> Guardar Cambios
+                </button>
+                <a href="{% url 'ofertas_laborales:vista_reclutador' %}" 
+                   class="btn btn-outline-danger px-4 py-2 rounded-pill shadow-sm w-100 w-md-auto">
+                    <i class="bi bi-x-circle me-2"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

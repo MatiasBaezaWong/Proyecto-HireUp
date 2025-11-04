@@ -1,0 +1,16 @@
+{% extends "administrador/base.html" %}
+{% block content %}
+    <div class="container py-4">
+        <div class="card shadow-lg border-0 mb-5 rounded-4">
+            <div class="card-body bg-white">
+                <form method="post" class="needs-validation">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-success w-100 fw-semibold shadow-sm">
+                        <i class="bi bi-check2-circle me-1"></i> Crear Reclutador
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}    

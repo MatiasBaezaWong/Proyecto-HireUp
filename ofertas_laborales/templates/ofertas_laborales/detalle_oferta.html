@@ -42,32 +42,40 @@
             </div>
 
             <!-- Botones -->
-            <div class="text-center mt-4"></div>
+            <div class="text-center mt-4">
                 {% if request.user.rol == 'candidato' %}
-                    <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" onclick="postular()"><i class="bi bi-cursor me-2"></i>Postular</button>
-                    <a href="{% url 'ofertas_laborales:vista_candidato' %}" class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
-                    <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
-                    </a>
-                {% elif request.user.rol == 'reclutador' %}
-                    <a href="{% url 'ofertas_laborales:editar_oferta' oferta.id %}" 
+                    <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
+                    <button class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm" onclick="postular()">
+                        <i class="bi bi-cursor me-2"></i> Postular
+                    </button>
+                    <a href="{% url 'ofertas_laborales:vista_candidato' %}" 
                         class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
-                            <i class="bi bi-pencil-square me-1"></i> Editar
-                    </a>
-                    <a href="{% url 'ofertas_laborales:eliminar_oferta' oferta.id %}" 
-                        class="btn btn-outline-danger px-4 py-2 rounded-pill shadow-sm">
-                            <i class="bi bi-trash3 me-1"></i> Eliminar
-                    </a>
-                    <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
                         <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
                     </a>
-                {% endif %}
-            </div>
+                    </div>
 
-            <div class="text-center mt-4">
-                <a href="{% url 'ofertas_laborales:vista_candidato' %}" class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
-                    <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
-                </a>
-            </div>
+                {% elif request.user.rol == 'reclutador' %}
+                    <div class="d-flex flex-column align-items-center gap-3">
+                    <!-- Botones editar y eliminar uno al lado del otro -->
+                    <div class="d-flex flex-column flex-md-row justify-content-center gap-3 w-100">
+                        <a href="{% url 'ofertas_laborales:editar_oferta' oferta.id %}" 
+                        class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm w-100 w-md-auto">
+                        <i class="bi bi-pencil-square me-1"></i> Editar
+                        </a>
+                        <a href="{% url 'ofertas_laborales:eliminar_oferta' oferta.id %}" 
+                        class="btn btn-outline-danger px-4 py-2 rounded-pill shadow-sm w-100 w-md-auto">
+                        <i class="bi bi-trash3 me-1"></i> Eliminar
+                        </a>
+                    </div>
+
+                    <!-- Botón volver debajo -->
+                    <a href="{% url 'ofertas_laborales:vista_reclutador' %}" 
+                        class="btn btn-outline-success px-4 py-2 rounded-pill shadow-sm">
+                        <i class="bi bi-arrow-left me-2"></i> Volver a Ofertas
+                    </a>
+                    </div>
+                {% endif %}
+            </div>            
         </div>
     </div>
 </div>

@@ -1,45 +1,115 @@
 {% extends 'ofertas_laborales/base.html' %}
 {% block content %}
-<div class="container mt-5">
-    <div class="card shadow-lg border-0 rounded-4">
-        <div class="card-header bg-primary text-white text-center rounded-top">
-            <h3 class="mb-0">{{ candidato.nombre }} {{ candidato.apellido }}</h3>
-        </div>
-        <div class="card-body p-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>RUT:</strong> {{ candidato.rut }}</p>
-                    <p><strong>Correo:</strong> {{ candidato.usuario.email }}</p>
-                    <p><strong>Teléfono:</strong> {{ candidato.telefono|default:"No registrado" }}</p>
-                    <p><strong>Dirección:</strong> {{ candidato.direccion|default:"No registrada" }}</p>
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0 rounded-4">
+            <!-- Encabezado -->
+            <div class="card-header bg-success text-white text-center rounded-top py-3">
+                <h3 class="fw-bold mb-0">{{ candidato.nombre }} {{ candidato.apellido }}</h3>
+                <p class="mb-0 small opacity-75">Detalle del candidato</p>
+            </div>
+
+            <!-- Cuerpo -->
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <p><strong>RUT:</strong> {{ candidato.rut }}</p>
+                        <p><strong>Correo:</strong> {{ candidato.usuario.email }}</p>
+                        <p><strong>Teléfono:</strong> {{ candidato.telefono|default:"No registrado" }}</p>
+                        <p><strong>Dirección:</strong> {{ candidato.direccion|default:"No registrada" }}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <p><strong>Experiencia:</strong> {{ candidato.experiencia }} años</p>
+                        <p><strong>Descripción:</strong></p>
+                        <p class="text-muted">{{ candidato.descripcion|default:"Sin descripción" }}</p>
+                        <p>
+                            <strong>CV:</strong>
+                            {% if candidato.cv %}
+                                <a href="{% url 'ofertas_laborales:descargar_cv_reclutador' candidato.id %}"
+                                class="btn btn-outline-success btn-sm ms-2">
+                                <i class="bi bi-download me-1"></i> Descargar CV
+                                </a>
+                            {% else %}
+                                <span class="text-muted">No hay archivo</span>
+                            {% endif %}
+                        </p>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <p><strong>Experiencia:</strong> {{ candidato.experiencia }} años</p>
-                    <p><strong>Descripción:</strong></p>
-                    <p class="text-muted">{{ candidato.descripcion|default:"Sin descripción" }}</p>
-                    <p>
-                        <strong>CV:</strong>
-                        {% if candidato.cv %}
-                            <a href="{{ candidato.cv.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-file-earmark-arrow-down"></i> Descargar CV
-                            </a>
-                        {% else %}
-                            <span class="text-muted">No hay archivo</span>
-                        {% endif %}
-                    </p>
+            </div>
+
+            <!-- Pie con botones -->
+            <div class="card-footer bg-light rounded-bottom py-3 text-center">
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+
+                    <!-- Botón agendar entrevista -->
+                    <a href="{% url 'ofertas_laborales:agendar_entrevista' candidato.postulaciones.first.oferta.id %}" 
+                    class="btn btn-outline-success rounded-pill shadow-sm px-4">
+                        <i class="bi bi-calendar-event me-1"></i> Agendar Entrevista
+                    </a>
+
+                    <!-- Botón aprobar (abre modal) -->
+                    <button type="button" class="btn btn-success rounded-pill shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalAprobar">
+                        <i class="bi bi-check-circle me-1"></i> Aprobar
+                    </button>
+
+                    <!-- Botón rechazar (abre modal) -->
+                    <button type="button" class="btn btn-outline-danger rounded-pill shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#modalRechazar">
+                        <i class="bi bi-x-circle me-1"></i> Rechazar
+                    </button>
+
+
+                                      
+                </div>
+                <br>
+                <br>
+                <!-- Volver -->
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="{% url 'ofertas_laborales:panel_postulaciones' %}" 
+                    class="btn btn-outline-secondary rounded-pill shadow-sm px-4">
+                        <i class="bi bi-arrow-left-circle me-1"></i> Volver
+                    </a>  
                 </div>
             </div>
         </div>
-        <div class="card-footer text-center bg-light rounded-bottom">
-            <a href="{% url 'ofertas_laborales:agendar_entrevista' candidato.postulaciones.first.oferta.id %}" 
-               class="btn btn-secondary rounded-pill">
-                Agendar Entrevista
-            </a>
-            <a href="{% url 'ofertas_laborales:ver_postulaciones' candidato.postulaciones.first.oferta.id %}" 
-               class="btn btn-secondary rounded-pill">
-                <i class="bi bi-arrow-left-circle"></i> Volver
-            </a>
+    </div>
+
+    <!-- MODAL APROBAR -->
+    <div class="modal fade" id="modalAprobar" tabindex="-1" aria-labelledby="modalAprobarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header bg-success text-white rounded-top">
+                    <h5 class="modal-title" id="modalAprobarLabel"><i class="bi bi-check-circle me-2"></i>Confirmar aprobación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <p>¿Deseas aprobar la postulación de <strong>{{ candidato.nombre }} {{ candidato.apellido }}</strong>?</p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center pb-4">
+                    <a href="{% url 'ofertas_laborales:cambiar_estado_postulacion' candidato.postulaciones.first.candidato.id 'aprobada' %}" 
+                    class="btn btn-success px-4 rounded-pill">Sí, aprobar</a>
+                    <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- MODAL RECHAZAR -->
+    <div class="modal fade" id="modalRechazar" tabindex="-1" aria-labelledby="modalRechazarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-header bg-danger text-white rounded-top">
+                    <h5 class="modal-title" id="modalRechazarLabel"><i class="bi bi-x-circle me-2"></i>Confirmar rechazo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <p>¿Estás seguro de que deseas rechazar la postulación de <strong>{{ candidato.nombre }} {{ candidato.apellido }}</strong>?</p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center pb-4">
+                    <a href="{% url 'ofertas_laborales:cambiar_estado_postulacion' candidato.postulaciones.first.candidato.id 'rechazada' %}" 
+                    class="btn btn-danger px-4 rounded-pill">Sí, rechazar</a>
+                    <button type="button" class="btn btn-outline-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

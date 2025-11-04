@@ -75,7 +75,7 @@ class Candidato(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
     direccion = models.CharField(max_length=100, blank=True, null=True)
-    cv = models.FileField(upload_to="cvs/", null=True, blank=True)
+    cv = models.URLField("CV", null=True, blank=True)
 
     def __str__(self):
         return f"{self.nombre} {self.apellido} ({self.rut})"
@@ -157,6 +157,7 @@ class Obra(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     comuna = models.ForeignKey("Comuna", on_delete=models.SET_NULL, null=True, related_name="obras")
     ubicacion = models.CharField(max_length=255, blank=True, editable=False)
+    direccion = models.CharField(max_length=255, blank=True, null=True)
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_termino = models.DateField(null=True, blank=True)
 
@@ -191,14 +192,14 @@ class OfertaLaboral(models.Model):
     fecha_publicacion = models.DateField(auto_now_add=True)
     estado = models.CharField(max_length=50, choices=ESTADOS, default="abierta")
     experiencia_minima = models.PositiveIntegerField(default=0)
-    limite_postulaciones = models.PositiveIntegerField(default=0)  # 0 = sin límite
+    limite_postulaciones = models.PositiveIntegerField(default=0)
     area = models.CharField(max_length=50, blank=True, null=True)
     obra = models.ForeignKey("Obra", on_delete=models.CASCADE, related_name="ofertas")
 
     reclutador = models.ForeignKey(Reclutador, on_delete=models.CASCADE, related_name="ofertas")
 
     def save(self, *args, **kwargs):
-        # Si no se define el área, heredar la del reclutador
+
         if not self.area and self.reclutador:
             self.area = self.reclutador.area
         super().save(*args, **kwargs)
@@ -226,22 +227,18 @@ class Postulacion(models.Model):
     reclutador = models.ForeignKey(Reclutador, on_delete=models.CASCADE, related_name="postulaciones")
 
     def save(self, *args, **kwargs):
-        # Verificar si la oferta está abierta
+
         if self.oferta.estado != "abierta":
             raise ValueError("La oferta ya está cerrada y no acepta más postulaciones.")
 
-        # Contar postulaciones existentes
         total_postulaciones = Postulacion.objects.filter(oferta=self.oferta).count()
 
-        # Validar experiencia mínima
         if self.candidato.experiencia < self.oferta.experiencia_minima:
             raise ValueError(
                 f"Tu experiencia ({self.candidato.experiencia} años) no cumple con la mínima requerida ({self.oferta.experiencia_minima} años)."
             )
 
-        # Si hay límite y se alcanzó
         if self.oferta.limite_postulaciones and total_postulaciones >= self.oferta.limite_postulaciones:
-            # Cerrar la oferta
             self.oferta.estado = "cerrada"
             self.oferta.save()
             raise ValueError("Se ha alcanzado el límite máximo de postulaciones para esta oferta.")
@@ -261,44 +258,28 @@ class Entrevista(models.Model):
         ("presencial", "Presencial"),
     ]
 
-    RESULTADOS = [
-        ("pendiente", "Pendiente"),
-        ("rechazado", "Rechazado"),
-        ("aprobado", "Aprobado"),
-    ]
-
-    id_entrevista = models.AutoField(primary_key=True)
     fecha = models.DateField()
     hora = models.TimeField()
     modalidad = models.CharField(max_length=25, choices=MODALIDAD)
     comentarios = models.TextField(max_length=225, blank=True, null=True)
-    resultado = models.CharField(max_length=50, choices=RESULTADOS, default="pendiente")
 
     postulacion = models.ForeignKey("Postulacion", on_delete=models.CASCADE, related_name="entrevistas")
     reclutador = models.ForeignKey("Reclutador", on_delete=models.SET_NULL, null=True, blank=True)
     candidato = models.ForeignKey("Candidato", on_delete=models.SET_NULL, null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # ✅ hereda datos automáticamente
         if self.postulacion:
             self.reclutador = self.postulacion.reclutador
             self.candidato = self.postulacion.candidato
 
         super().save(*args, **kwargs)
-
-        # ✅ Actualiza estado de la postulación según resultado
-        if self.resultado in ["rechazado", "aprobado"]:
-            self.postulacion.estado = (
-                "rechazada" if self.resultado == "rechazado" else "aprobada"
-            )
-            self.postulacion.save()
-
-        # ✅ Envía correo al candidato
-        if self.candidato and self.candidato.usuario.email:
-            self.enviar_correo_confirmacion()
+        self.enviar_correo_confirmacion()
 
     def enviar_correo_confirmacion(self):
         """Envía correo con los datos de la entrevista al candidato"""
+        if not self.candidato or not self.candidato.usuario.email:
+            return
+
         asunto = f"Detalles de tu entrevista - HireUp"
         mensaje = (
             f"Hola {self.candidato.nombre},\n\n"
@@ -319,7 +300,7 @@ class Entrevista(models.Model):
         )
 
     def __str__(self):
-        return f"Entrevista {self.id_entrevista} - {self.resultado}"
+        return f"Entrevista {self.id} - {self.modalidad.capitalize()}"
 
 
 

@@ -13,6 +13,7 @@
                   <li class="list-group-item"><strong>Correo:</strong> {{ request.user.email }}</li>
                   <li class="list-group-item"><strong>RUT:</strong> {{ request.user.perfil_reclutador.rut }}</li>
                   <li class="list-group-item"><strong>Teléfono de contacto:</strong> {{ request.user.perfil_reclutador.telefono }}</li>
+                  <li class="list-group-item"><strong>Area:</strong> {{ request.user.perfil_reclutador.area|capfirst }}</li>
               </ul>
               <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">   
                 <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-outline-success px-4 shadow-sm">

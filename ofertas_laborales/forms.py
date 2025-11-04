@@ -124,11 +124,10 @@ class CrearOfertaForm(forms.ModelForm):
 class EntrevistaForm(forms.ModelForm):
     class Meta:
         model = Entrevista
-        fields = ["fecha", "hora", "modalidad", "comentarios", "resultado"]
+        fields = ["fecha", "hora", "modalidad", "comentarios"]
         widgets = {
             "fecha": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "hora": forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
             "modalidad": forms.Select(attrs={"class": "form-select"}),
             "comentarios": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
-            "resultado": forms.Select(attrs={"class": "form-select"}),
         }          

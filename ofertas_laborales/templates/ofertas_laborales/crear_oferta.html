@@ -1,19 +1,24 @@
 {% extends "ofertas_laborales/base.html" %}
 {% block content %}
     <div class="container mt-5">
-        <h2 class="text-center mb-4">Publicar Nueva Oferta Laboral</h2>
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-dark">Crear Oferta Laboral</h2>
+            <div class="border-bottom border-3 border-success mx-auto" style="width: 90px;"></div>
+        </div>
         <div class="card shadow p-4">
             <form method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit">Crear Oferta</button>
+                <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                    <button type="submit" class="btn btn-success px-4 py-2 shadow-sm rounded-3">
+                    <i class="bi bi-check-circle me-2"></i> Crear Oferta
+                    </button>
+                    <a href="{% url 'ofertas_laborales:vista_reclutador' %}" 
+                    class="btn btn-outline-danger px-4 py-2 shadow-sm rounded-3">
+                    <i class="bi bi-arrow-left me-2"></i> Cancelar
+                    </a>
+                </div>
             </form>
-        </div>
-        <br>
-        <div class="text-center">
-            <a href="{% url 'ofertas_laborales:vista_reclutador' %}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Cancelar
-            </a>
         </div>
     </div>
 {% endblock %}

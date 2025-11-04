@@ -50,9 +50,6 @@ INSTALLED_APPS = [
 
 AUTH_USER_MODEL = "main.Usuario"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 LOGIN_URL = "main:login"
 LOGIN_REDIRECT_URL = "/main/redirigir/"
 LOGOUT_REDIRECT_URL = "main"
@@ -103,6 +100,10 @@ WSGI_APPLICATION = 'hireup.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
+    #'default': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': BASE_DIR / 'db.sqlite3',
+    #}
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'HireUp_DB',

@@ -2,175 +2,117 @@
 {% load static %}
 
 {% block content %}
-    <body class="bg-light">
-
-  <div class="container py-5">
-
-    <!-- Encabezado -->
+<div class="container py-5">
+    <!-- Título -->
     <div class="text-center mb-5">
-      <h2 class="fw-bold mb-3">Portal del Administrador</h2>
-      <p class="text-muted">Gestión de Reclutadores y Candidatos</p>
+        <h1 class="fw-bold text-success">Portal de Administración</h1>
+        <div class="border-bottom border-3 border-success mx-auto" style="width: 120px;"></div>
     </div>
 
-    <!-- Crear Reclutador -->
-    <div class="card shadow-lg border-0 mb-5 rounded-4">
-      <div class="card-header bg-gradient text-white" style="background: linear-gradient(90deg, #007bff, #00bfa6);">
-        <h3 class="h5 mb-0"><i class="bi bi-person-plus me-2"></i>Crear Reclutador</h3>
-      </div>
-      <div class="card-body bg-white">
-        <form method="post" class="needs-validation">
-          {% csrf_token %}
-          <div class="mb-3">
-            {{ form.as_p }}
-          </div>
-          <button type="submit" class="btn btn-success w-100 fw-semibold shadow-sm">
-            <i class="bi bi-check2-circle me-1"></i> Registrar Reclutador
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Usuarios Existentes -->
-    <div class="card shadow-lg border-0 mb-5 rounded-4">
-      <div class="card-header bg-success text-white">
-        <h3 class="h5 mb-0"><i class="bi bi-people-fill me-2"></i>Usuarios Existentes</h3>
-      </div>
-      <div class="card-body bg-white">
-        <ul class="list-group list-group-flush">
-          <!-- Reclutadores Existentes -->
-          {% for r in reclutadores %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span><strong>{{ r.nombre }} {{ r.apellido }}</strong> — Rut: {{ r.rut }}</span>
-            <span class="badge bg-info text-dark px-3 py-2">Reclutador / {{ r.area|capfirst }}</span>
-          </li>
-          {% empty %}
-          <li class="list-group-item text-muted text-center">No hay reclutadores registrados.</li>
-          {% endfor %}
-
-          <!-- Candidatos Existentes -->
-          {% for c in candidatos %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span><strong>{{ c.nombre }} {{ c.apellido }}</strong> — Rut: {{ c.rut }}</span>
-            <span class="badge bg-primary px-3 py-2">Candidato</span>
-          </li>
-          {% empty %}
-          <li class="list-group-item text-muted text-center">No hay candidatos registrados.</li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-
-    <!-- Reclutadores Registrados -->
-    <div class="card shadow-sm border-0 mb-5 rounded-4">
-      <div class="card-header bg-success text-white">
-        <h3 class="h5 mb-0"><i class="bi bi-person-badge me-2"></i>Reclutadores Registrados</h3>
-      </div>
-      <div class="card-body bg-white">
-        {% if reclutadores %}
-        <div class="table-responsive">
-          <table class="table table-hover align-middle">
-            <thead class="table-light">
-              <tr>
-                <th>Usuario</th>
-                <th>Correo</th>
-                <th>RUT</th>
-                <th>Área</th>
-                <th class="text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for r in reclutadores %}
-              <tr>
-                <td>{{ r.nombre }} {{ r.apellido }}</td>
-                <td>{{ r.usuario.email }}</td>
-                <td>{{ r.rut }}</td>
-                <td>{{ r.area|capfirst }}</td>
-                <td class="text-center">
-                  <a href="{% url 'administrador:editar_reclutador' r.pk %}" class="btn btn-outline-success btn-sm me-2">
-                    <i class="bi bi-pencil-square"></i>
-                  </a>
-                  <form method="POST" action="{% url 'administrador:eliminar_reclutador' r.pk %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger btn-sm"
-                      onclick="return confirm('¿Estás seguro que deseas eliminar este reclutador?');">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </form>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+    <!-- Estadísticas globales -->
+    <div class="row text-center mb-5">
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card shadow-sm border-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Usuarios</h5>
+                    <h2 class="fw-bold text-success">{{ total_usuarios }}</h2>
+                </div>
+            </div>
         </div>
-        {% else %}
-        <p class="text-muted text-center mb-0">No hay reclutadores registrados.</p>
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- Candidatos Registrados -->
-    <div class="card shadow-sm border-0 mb-5 rounded-4">
-      <div class="card-header bg-success text-white">
-        <h3 class="h5 mb-0"><i class="bi bi-person-lines-fill me-2"></i>Candidatos Registrados</h3>
-      </div>
-      <div class="card-body bg-white">
-        {% if candidatos %}
-        <div class="table-responsive">
-          <table class="table table-hover align-middle">
-            <thead class="table-light">
-              <tr>
-                <th>Usuario</th>
-                <th>Correo</th>
-                <th>RUT</th>
-                <th>Contacto</th>
-                <th class="text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for c in candidatos %}
-              <tr>
-                <td>{{ c.nombre }} {{ c.apellido }}</td>
-                <td>{{ c.usuario.email }}</td>
-                <td>{{ c.rut }}</td>
-                <td>{{ c.telefono }}</td>
-                <td class="text-center">
-                  <a href="{% url 'administrador:editar_candidato' c.pk %}" class="btn btn-outline-success btn-sm me-2">
-                    <i class="bi bi-pencil-square"></i>
-                  </a>
-                  <form method="POST" action="{% url 'administrador:eliminar_candidato' c.pk %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-outline-danger btn-sm"
-                      onclick="return confirm('¿Estás seguro que deseas eliminar este candidato?');">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </form>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card shadow-sm border-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Reclutadores</h5>
+                    <h2 class="fw-bold text-primary">{{ total_reclutadores }}</h2>
+                </div>
+            </div>
         </div>
-        {% else %}
-        <p class="text-muted text-center mb-0">No hay candidatos registrados.</p>
-        {% endif %}
-      </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card shadow-sm border-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Candidatos</h5>
+                    <h2 class="fw-bold text-warning">{{ total_candidatos }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row text-center mb-5">
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card shadow-sm border-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Ofertas</h5>
+                    <h2 class="fw-bold text-success">{{ total_ofertas }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card shadow-sm border-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Postulaciones</h5>
+                    <h2 class="fw-bold text-primary">{{ total_postulaciones }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-3">
+            <div class="card shadow-sm border-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Entrevistas</h5>
+                    <h2 class="fw-bold text-warning">{{ total_entrevistas }}</h2>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Botón Salir -->
-    <div class="text-center mt-4">
-      <a href="{% url 'main:logout' %}" class="btn btn-outline-danger px-4 py-2 fw-semibold shadow-sm">
-        <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
-      </a>
+    <a href="{% url 'administrador:gestionar_obras' %}" class="btn btn-outline-success">Gestionar Obras</a>
+    <!-- Paneles de acceso -->
+    <div class="row g-4 text-center">
+        <!-- Panel de usuarios -->
+        <div class="col-12 col-md-4">
+            <a href="{% url 'administrador:panel_usuarios' %}" class="text-decoration-none">
+                <div class="card shadow-sm h-100 hover-card">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-5">
+                        <i class="bi bi-people-fill display-4 text-success mb-3"></i>
+                        <h5 class="card-title fw-bold text-success">Panel de Usuarios</h5>
+                        <p class="card-text text-muted">Visualiza y gestiona todos los usuarios registrados en el sistema.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Panel de ofertas -->
+        <div class="col-12 col-md-4">
+            <a href="" class="text-decoration-none">
+                <div class="card shadow-sm h-100 hover-card">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-5">
+                        <i class="bi bi-briefcase-fill display-4 text-primary mb-3"></i>
+                        <h5 class="card-title fw-bold text-primary">Panel de Ofertas</h5>
+                        <p class="card-text text-muted">Administra todas las ofertas laborales publicadas por los reclutadores.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Panel de postulaciones -->
+        <div class="col-12 col-md-4">
+            <a href="" class="text-decoration-none">
+                <div class="card shadow-sm h-100 hover-card">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-5">
+                        <i class="bi bi-file-earmark-text-fill display-4 text-warning mb-3"></i>
+                        <h5 class="card-title fw-bold text-warning">Panel de Postulaciones</h5>
+                        <p class="card-text text-muted">Revisa y gestiona todas las postulaciones realizadas a las ofertas laborales.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
+</div>
 
-    <div class="text-center mt-4">
-      <a href="{% url 'administrador:gestionar_obras' %}" class="btn btn-outline-danger px-4 py-2 fw-semibold shadow-sm">
-        <i class="bi bi-box-arrow-right me-1"></i> Gestionar Obras
-      </a>
-    </div>
-
-  </div>
-
-</body>
-
+<!-- Hover effect -->
+<style>
+.hover-card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s ease-in-out;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+}
+</style>
 {% endblock %}

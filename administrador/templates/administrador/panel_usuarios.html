@@ -1,0 +1,151 @@
+{% extends "administrador/base.html" %}
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-center fw-bold mb-4 text-success">Panel de Administración</h2>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4 text-center">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <h5>Total Usuarios</h5>
+                    <h2 class="fw-bold text-success">{{ total_usuarios }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body">
+                    <h5>Reclutadores</h5>
+                    <h2 class="fw-bold text-primary">{{ total_reclutadores }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body">
+                    <h5>Candidatos</h5>
+                    <h2 class="fw-bold text-warning">{{ total_candidatos }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <!-- 📊 FILTROS -->
+  <div class="card mb-4 shadow-sm border-0 rounded-4">
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-center">
+        <div class="col-md-4">
+          <input type="text" name="buscar" class="form-control" placeholder="Buscar por nombre o correo"
+                 value="{{ request.GET.buscar }}">
+        </div>
+        <div class="col-md-3">
+          <select name="rol" class="form-select">
+            <option value="">Todos los roles</option>
+            <option value="reclutador" {% if request.GET.rol == "reclutador" %}selected{% endif %}>Reclutadores</option>
+            <option value="candidato" {% if request.GET.rol == "candidato" %}selected{% endif %}>Candidatos</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select name="area" class="form-select">
+            <option value="">Todas las áreas</option>
+            {% for area in areas %}
+              <option value="{{ area }}" {% if request.GET.area == area %}selected{% endif %}>{{ area|capfirst }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2 text-end">
+          <button type="submit" class="btn btn-success w-100">
+            <i class="bi bi-search me-1"></i> Filtrar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 👥 TABLAS DE USUARIOS -->
+  <div class="card shadow-sm border-0 rounded-4 mb-5">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <!-- Título a la izquierda -->
+        <h5 class="mb-0">
+            <i class="bi bi-people-fill me-2"></i>Usuarios Registrados
+        </h5>
+
+        <!-- Botones a la derecha -->
+        <div class="d-flex gap-2">
+            <a href="{% url 'administrador:exportar_usuarios_excel' %}" class="btn btn-light btn-sm fw-semibold">
+                <i class="bi bi-download me-1"></i> Exportar Excel
+            </a>
+            <a href="{% url 'administrador:generar_informe_pdf' %}" class="btn btn-light btn-sm fw-semibold">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Generar PDF
+            </a>
+            <a href="{% url 'administrador:crear_reclutador' %}" class="btn btn-outline-light btn-sm fw-semibold">
+                <i class="bi bi-pencil-square me-1"></i> Crear Nuevo Reclutador
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+      {% if usuarios %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>RUT</th>
+              <th>Rol</th>
+              <th>Área</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in usuarios %}
+            <tr>
+              <td>{{ u.nombre }} {{ u.apellido }}</td>
+              <td>{{ u.usuario.email }}</td>
+              <td>{{ u.rut }}</td>
+              <td><span class="badge bg-{{ u.usuario.rol|yesno:'primary,info,warning,success' }}">{{ u.usuario.rol|capfirst }}</span></td>
+              <td>{{ u.area|capfirst|default:"No Aplica" }}</td>
+              <td class="text-center">
+                {% if u.rol == 'candidato' %}
+                <a href="{% url 'administrador:editar_candidato' u.pk %}" class="btn btn-outline-success btn-sm me-2">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                {% else %}                
+                <a href="{% url 'administrador:editar_reclutador' u.pk %}" class="btn btn-outline-success btn-sm me-2">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                {% endif %}
+                {% if u.rol == 'candidato' %}
+                <form method="POST" action="{% url 'administrador:eliminar_candidato' u.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('¿Eliminar este usuario?');">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+                {% else %}
+                <form method="POST" action="{% url 'administrador:eliminar_reclutador' u.pk %}" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('¿Eliminar este usuario?');">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted text-center mb-0">No hay usuarios registrados.</p>
+      {% endif %}
+    </div>   
+    <br> 
+    <a href="{% url 'administrador:portal_administrador' %}" class="btn btn-outline-success btn-sm fw-semibold w-100 w-md-auto mt-3 ">
+            <i class="bi bi-pencil-square me-1"></i> Volver al Portal de Administrador
+    </a>
+</div>
+{% endblock %}
