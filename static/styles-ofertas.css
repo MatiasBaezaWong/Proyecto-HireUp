@@ -7,9 +7,22 @@
   z-index: 1000;
 }
 
+.navbar-toggler {
+    display: none !important;
+  }
+
 .logo-img {
   height: 50px;
   width: auto;
+}
+
+.navbar-brand {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.navbar-toggler {
+  height: 40px; /* ajusta si tu logo es más alto */
 }
 
 /* Marca */
@@ -29,11 +42,37 @@
   border-radius: 0.75rem;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+/* Corrige la alineación vertical del logo y el botón hamburguesa */
+.hireup-navbar .container-fluid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.navbar-toggler {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px; /* igual al alto del logo */
+  padding: 0 !important;
+  margin: 0 !important;
+}
 
 /* OFERTAS */
 body {
   background-color: #f4f5f5;
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden !important;
+}
+html {
+  overflow-x: hidden !important;
 }
 
 .card-oferta {
@@ -363,15 +402,11 @@ body {
 @media (max-width: 575.98px) {
 
   /* Navbar */
-  .navbar .navbar-brand {
-    font-size: 1rem;
-    text-align: center;
-    width: 100%;
+  .navbar-toggler {
+    display: flex !important;
   }
-
-  .hireup-navbar .nav-link {
-    text-align: center;
-    padding: 0.75rem 0;
+  .navbar-collapse {
+    margin-top: 10px;
   }
 
   /* Cards */

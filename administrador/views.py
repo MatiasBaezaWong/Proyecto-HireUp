@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponse
 from django.contrib import messages
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Count, Avg
 from django.utils import timezone
 from django.http import JsonResponse
 import pandas as pd
@@ -348,6 +348,58 @@ def crear_obra(request):
         form = ObraForm()
 
     return render(request, "administrador/crear_obra.html", {"form": form})    
+
+# PANEL OFERTAS
+def panel_ofertas(request):
+    # Métricas
+    total_ofertas = OfertaLaboral.objects.count()
+    promedio_ofertas = (
+        OfertaLaboral.objects.values("reclutador")
+        .annotate(total=Count("id"))
+        .aggregate(promedio=Avg("total"))["promedio"]
+    ) or 0
+    top_reclutador = (
+        Reclutador.objects.annotate(total_ofertas=Count("ofertas"))
+        .order_by("-total_ofertas")
+        .first()
+    )
+    ofertas_abiertas = OfertaLaboral.objects.filter(estado="abierta").count()
+    ofertas_cerradas = OfertaLaboral.objects.filter(estado="cerrada").count()
+    promedio_postulaciones = (
+        Postulacion.objects.values("oferta")
+        .annotate(total=Count("id_postulacion"))
+        .aggregate(promedio=Avg("total"))["promedio"]
+    ) or 0
+
+    # Ofertas por área (para gráfico)
+    ofertas_por_area = (
+        Reclutador.objects.values("area")
+        .annotate(total=Count("ofertas"))
+        .order_by("-total")
+    )
+
+    # Datos para gráficos
+    labels_areas = [a["area"] or "Sin área" for a in ofertas_por_area]
+    data_areas = [a["total"] for a in ofertas_por_area]
+    data_estados = [ofertas_abiertas, ofertas_cerradas]
+
+    # Tabla
+    ofertas = OfertaLaboral.objects.select_related("reclutador", "obra").all()
+
+    contexto = {
+        "total_ofertas": total_ofertas,
+        "promedio_ofertas": round(promedio_ofertas, 2),
+        "top_reclutador": top_reclutador,
+        "ofertas_abiertas": ofertas_abiertas,
+        "ofertas_cerradas": ofertas_cerradas,
+        "promedio_postulaciones": round(promedio_postulaciones, 2),
+        "ofertas": ofertas,
+        "labels_areas": labels_areas,
+        "data_areas": data_areas,
+        "data_estados": data_estados,
+    }
+
+    return render(request, "administrador/panel_ofertas.html", contexto)
 
 # VOLVER AL HOME
 def volver_home(request):

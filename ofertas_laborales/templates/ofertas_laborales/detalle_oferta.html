@@ -14,7 +14,7 @@
         <div class="card-body p-4">
             <div class="mb-3">
                 <p class="mb-2"><strong class="text-success">Obra:</strong> {{ oferta.obra }}</p>
-                <p class="mb-2"><strong class="text-success">Ubicación:</strong> {{ oferta.comuna }}</p>
+                <p class="mb-2"><strong class="text-success">Ubicación:</strong>{{ oferta.obra.direccion }}, {{ oferta.obra.comuna }}</p>
                 <p class="mb-2"><strong class="text-success">Cargo:</strong> {{ oferta.cargo }}</p>
                 <p class="mb-2"><strong class="text-success">Experiencia deseada:</strong> {{ oferta.experiencia_minima }} años</p>
                 <p class="mb-2"><strong class="text-success">Sueldo:</strong> ${{ oferta.salario_estimado|floatformat:0 }}</p>

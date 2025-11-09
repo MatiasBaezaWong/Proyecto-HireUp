@@ -73,10 +73,6 @@
                         <td>{{ oferta.fecha_publicacion|date:"d/m/Y" }}</td>
                         <td class="text-center">
                         <div class="d-flex flex-column flex-md-row justify-content-center gap-2">
-                            <a href="{% url 'ofertas_laborales:ver_postulaciones' oferta.id %}" 
-                            class="btn btn-sm btn-outline-success shadow-sm rounded-pill">
-                            <i class="bi bi-people"></i> Postulaciones
-                            </a>
                             <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" 
                             class="btn btn-sm btn-outline-success shadow-sm rounded-pill">
                             <i class="bi bi-eye"></i> Detalle
@@ -96,63 +92,6 @@
             Aún no has publicado ninguna oferta laboral.
             </div>
             {% endif %}
-
-        <!--{% if ofertas %}
-             Tabla dentro de una card
-            <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-body p-4">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle">
-                            <thead class="table-dark rounded-top">
-                                <tr>
-                                    <th scope="col">Título</th>
-                                    <th scope="col">Obra</th>
-                                    <th scope="col">Cargo</th>
-                                    <th scope="col">Estado</th>
-                                    <th scope="col">Fecha Publicación</th>
-                                    <th scope="col" class="text-center">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for oferta in ofertas %}
-                                    <tr>
-                                        <td class="fw-semibold">{{ oferta.titulo }}</td>
-                                        <td>{{ oferta.obra }}</td>
-                                        <td>{{ oferta.cargo }}</td>
-                                        <td>
-                                            {% if oferta.estado == "abierta" %}
-                                                <span class="badge border border-success text-success px-3 py-2">Abierta</span>
-                                            {% elif oferta.estado == "cerrada" %}
-                                                <span class="badge border border-danger text-danger px-3 py-2">Cerrada</span>
-                                            {% else %}
-                                                <span class="badge bg-warning text-dark px-3 py-2">{{ oferta.estado|capfirst }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ oferta.fecha_publicacion|date:"d/m/Y" }}</td>
-                                        <td class="text-center">
-                                            <a href="{% url 'ofertas_laborales:ver_postulaciones' oferta.id %}" 
-                                                class="btn btn-sm btn-outline-success me-2 shadow-sm rounded-pill">
-                                                    <i class="bi bi-people me-1"></i> Ver Postulaciones
-                                            </a>
-                                            <a href="{% url 'ofertas_laborales:detalle_oferta' oferta.id %}" 
-                                                class="btn btn-sm btn-outline-success me-2 shadow-sm rounded-pill">
-                                                    <i class="bi bi-people me-1"></i> Detalle Oferta
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="alert alert-warning text-center shadow-sm mt-4 rounded-3">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                Aún no has publicado ninguna oferta laboral.
-            </div>
-        {% endif %}-->
-
     </div>
     
 {% endblock %}

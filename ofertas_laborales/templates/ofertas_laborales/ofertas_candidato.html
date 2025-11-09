@@ -5,7 +5,7 @@
             <div class="row">
                 <!-- FILTROS -->
                 <aside class="col-lg-3 col-md-4 mb-4 width-100">
-                <!-- Filtros colapsables en móvil -->
+                <!-- FILTROS RESPONSIVE -->
                 <button class="btn btn-success w-100 d-md-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtrosCollapse" aria-expanded="false" aria-controls="filtrosCollapse">
                     <i class="bi bi-funnel"></i> Mostrar / Ocultar Filtros
                 </button>
@@ -90,9 +90,9 @@
                         {% for oferta in page_obj|dictsortreversed:"fecha_publicacion" %}
                         <div class="col-12 mb-4">
                             <div class="card-oferta p-4 shadow-sm rounded-4 border-0 bg-white">
-                                <div class="d-flex flex-column flex-md-row align-items-start">
+                                <div class="d-flex flex-column flex-md-row align-items-md-center">
                                     
-                                    <!-- Sección izquierda -->
+                                    <!-- SECCION IZQUIERDA -->
                                     <div class="col-12 col-md-9">
                                         <p class="text-muted small mb-1">
                                             <i class="bi bi-calendar-event me-1"></i> Publicado el {{ oferta.fecha_publicacion|date:"d/m/Y" }}
@@ -107,10 +107,10 @@
                                         </a>
                                     </div>
 
-                                    <!-- Sección derecha (ubicación + estado) -->
-                                    <div class="col-12 col-md-3 d-flex flex-column justify-content-center align-items-center mt-3 mt-md-0 border-start border-md-start-1 border-0 border-md-start">
+                                    <!-- SECCION DERECHA -->
+                                    <div class="col-12 col-md-3 d-flex flex-column justify-content-center align-items-center pt-2 mt-3 mt-md-0 border-start border-md-start ps-md-3 border-1 border-md-start">
                                         <p class="fw-semibold mb-2 text-center">
-                                            <i class="bi bi-geo-alt me-2"></i>{{ oferta.obra.direccion }}, {{ oferta.obra.comuna }}
+                                            <i class="bi bi-geo-alt me-2"></i>{{ oferta.obra.direccion }}, {{ oferta.obra.comuna }}.
                                         </p>
                                         {% if oferta.estado == "abierta" %}
                                             <span class="badge bg-light text-success border border-success rounded-pill">

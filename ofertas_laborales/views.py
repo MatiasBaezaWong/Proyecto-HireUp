@@ -305,15 +305,14 @@ def ver_postulaciones(request, id_oferta):
 
 # VER EL PERFIL DEL CANDIDATO (VISTA RECLUTADOR)
 @login_required
-def ver_perfil_candidato(request, id_candidato):
+def ver_perfil_candidato(request, postulacion_id):
     # Solo los reclutadores pueden acceder
     if not hasattr(request.user, "perfil_reclutador"):
         return redirect("home")
 
-    candidato = get_object_or_404(Candidato, id=id_candidato)
+    postulaciones = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
+    candidato = postulaciones.candidato
 
-    # Buscar postulaciones del candidato (opcional, para contexto)
-    postulaciones = Postulacion.objects.filter(candidato=candidato)
 
     return render(request, "ofertas_laborales/info_candidato.html", {
         "candidato": candidato,
@@ -321,8 +320,8 @@ def ver_perfil_candidato(request, id_candidato):
     })  
 
 #AGENDAR ENTREVISTA
-def agendar_entrevista(request, postulacion_id):
-    postulacion = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
+def agendar_entrevista(request, id_postulacion):
+    postulacion = get_object_or_404(Postulacion, id_postulacion=id_postulacion)
 
     if request.method == "POST":
         form = EntrevistaForm(request.POST)
@@ -331,7 +330,7 @@ def agendar_entrevista(request, postulacion_id):
             entrevista.postulacion = postulacion
             entrevista.save()
             messages.success(request, "Entrevista agendada y correo enviado al candidato.")
-            return redirect("ofertas_laborales:ver_postulaciones", postulacion.oferta.id)
+            return redirect("ofertas_laborales:panel_postulaciones")
     else:
         form = EntrevistaForm()
 

@@ -116,7 +116,7 @@
               <td><span class="badge bg-{{ u.usuario.rol|yesno:'primary,info,warning,success' }}">{{ u.usuario.rol|capfirst }}</span></td>
               <td>{{ u.area|capfirst|default:"No Aplica" }}</td>
               <td class="text-center">
-                {% if u.rol == 'candidato' %}
+                {% if u.usuario.rol == 'candidato' %}
                 <a href="{% url 'administrador:editar_candidato' u.pk %}" class="btn btn-outline-success btn-sm me-2">
                   <i class="bi bi-pencil-square"></i>
                 </a>
@@ -125,7 +125,7 @@
                   <i class="bi bi-pencil-square"></i>
                 </a>
                 {% endif %}
-                {% if u.rol == 'candidato' %}
+                {% if u.usuario.rol == 'candidato' %}
                 <form method="POST" action="{% url 'administrador:eliminar_candidato' u.pk %}" style="display:inline;">
                   {% csrf_token %}
                   <button type="submit" class="btn btn-outline-danger btn-sm"

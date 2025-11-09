@@ -42,7 +42,7 @@
                 <div class="d-flex flex-wrap justify-content-center gap-3">
 
                     <!-- Botón agendar entrevista -->
-                    <a href="{% url 'ofertas_laborales:agendar_entrevista' candidato.postulaciones.first.oferta.id %}" 
+                    <a href="{% url 'ofertas_laborales:agendar_entrevista' postulaciones.id_postulacion %}" 
                     class="btn btn-outline-success rounded-pill shadow-sm px-4">
                         <i class="bi bi-calendar-event me-1"></i> Agendar Entrevista
                     </a>

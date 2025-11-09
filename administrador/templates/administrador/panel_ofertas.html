@@ -1,0 +1,181 @@
+{% extends 'administrador/base.html' %}
+{% block content %}
+<div class="container mt-5">
+  <!-- Título -->
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-dark">Panel de Ofertas Laborales</h2>
+    <div class="border-bottom border-3 border-success mx-auto" style="width: 120px;"></div>
+  </div>
+
+  <!-- Métricas -->
+  <div class="row text-center mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+          <h6 class="fw-semibold text-muted">Total Ofertas</h6>
+          <h3 class="text-success fw-bold">{{ total_ofertas }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+          <h6 class="fw-semibold text-muted">Promedio / Reclutador</h6>
+          <h3 class="text-primary fw-bold">{{ promedio_ofertas }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+          <h6 class="fw-semibold text-muted">Ofertas Abiertas</h6>
+          <h3 class="text-success fw-bold">{{ ofertas_abiertas }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body">
+          <h6 class="fw-semibold text-muted">Ofertas Cerradas</h6>
+          <h3 class="text-danger fw-bold">{{ ofertas_cerradas }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="row mb-5">
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-success text-white fw-semibold">
+          Ofertas por Estado
+        </div>
+        <div class="card-body">
+          <canvas id="chartEstados" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-success text-white fw-semibold">
+          Ofertas por Área
+        </div>
+        <div class="card-body">
+          <canvas id="chartAreas" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Reclutador -->
+  <div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body text-center">
+      {% if top_reclutador %}
+      <h5 class="fw-semibold text-muted mb-1">Reclutador con más ofertas</h5>
+      <p class="fs-5 fw-bold text-dark mb-0">
+        {{ top_reclutador.nombre }} {{ top_reclutador.apellido }}
+        <span class="text-success">({{ top_reclutador.total_ofertas }} ofertas)</span>
+      </p>
+      {% else %}
+      <p class="text-muted mb-0">No hay datos disponibles</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0"><i class="bi bi-briefcase-fill me-2"></i>Listado de Ofertas</h5>
+      <div>
+        <a href="#" class="btn btn-light btn-sm fw-semibold me-2">
+          <i class="bi bi-download"></i> Excel
+        </a>
+        <a href="#" class="btn btn-light btn-sm fw-semibold">
+          <i class="bi bi-file-earmark-pdf"></i> PDF
+        </a>
+      </div>
+    </div>
+    <div class="card-body bg-white">
+      {% if ofertas %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Título</th>
+              <th>Reclutador</th>
+              <th>Obra</th>
+              <th>Estado</th>
+              <th>Publicación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in ofertas %}
+            <tr>
+              <td>{{ o.titulo }}</td>
+              <td>{{ o.reclutador.nombre }} {{ o.reclutador.apellido }}</td>
+              <td>{{ o.obra.nombre }}</td>
+              <td>
+                {% if o.estado == 'abierta' %}
+                <span class="badge bg-success">Abierta</span>
+                {% else %}
+                <span class="badge bg-danger">Cerrada</span>
+                {% endif %}
+              </td>
+              <td>{{ o.fecha_publicacion|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted text-center mb-0">No hay ofertas registradas.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Ofertas por estado
+  const ctxEstados = document.getElementById("chartEstados").getContext("2d");
+  new Chart(ctxEstados, {
+    type: "doughnut",
+    data: {
+      labels: ["Abiertas", "Cerradas"],
+      datasets: [{
+        data: {{ data_estados|safe }},
+        backgroundColor: ["#00bfa6", "#ff5e5e"],
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { position: "bottom" },
+      },
+    }
+  });
+
+  // Ofertas por área
+  const ctxAreas = document.getElementById("chartAreas").getContext("2d");
+  new Chart(ctxAreas, {
+    type: "bar",
+    data: {
+      labels: {{ labels_areas|safe }},
+      datasets: [{
+        label: "Ofertas",
+        data: {{ data_areas|safe }},
+        backgroundColor: "#00bfa6",
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true },
+      },
+      plugins: {
+        legend: { display: false },
+      },
+    }
+  });
+</script>
+{% endblock %}
