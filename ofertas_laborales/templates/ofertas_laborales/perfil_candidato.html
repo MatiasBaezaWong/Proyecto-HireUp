@@ -57,8 +57,9 @@
     <!-- 🔹 Formulario de edición -->
     <div id="form-edicion" class="card p-4 shadow-lg border-0 rounded-4 mt-4" style="display: none;">
         <h5 class="fw-bold text-success mb-3">Editar Información</h5>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            {{ form.non_field_errors }}
             {{ form.as_p }}
             <div class="d-flex justify-content-between mt-3">
                 <button type="submit" name="update_info" class="btn btn-success px-4">Guardar cambios</button>

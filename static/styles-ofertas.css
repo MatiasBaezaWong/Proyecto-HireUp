@@ -113,6 +113,11 @@ html {
   box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
 }
 
+.btn-success {
+  background-color: #27ae60;
+  font-weight: 500;
+}
+
 /* MIS POSTULACIONES */
 /* ========== CONTENEDOR PRINCIPAL ========== */
 .postulaciones-container {
@@ -208,7 +213,7 @@ html {
 }
 
 .filtros-card .btn-success:hover {
-  background-color: #219150;
+  background-color: #27ae60;
   box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
 }
 
@@ -436,6 +441,13 @@ html {
 
 /* Pantallas entre 576px y 991px */
 @media (min-width: 576px) and (max-width: 991.98px) {
+
+  .navbar-toggler {
+    display: flex !important;
+  }
+  .navbar-collapse {
+    margin-top: 10px;
+  }
 
   .hireup-navbar .navbar-brand {
     font-size: 1.1rem;

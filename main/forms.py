@@ -44,6 +44,12 @@ class RegistroCandidatoForm(UserCreationForm):
         if Candidato.objects.filter(rut=rut).exists():
             raise ValidationError("Este RUT ya está registrado.")
         return rut
+    
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get("telefono")
+        if telefono and not re.match(r"^\+?\d{7,15}$", telefono):
+            raise ValidationError("El número de teléfono no es válido.")
+        return telefono
 
     def clean(self):
         cleaned_data = super().clean()
