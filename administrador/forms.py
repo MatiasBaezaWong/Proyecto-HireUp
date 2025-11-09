@@ -58,7 +58,7 @@ class RegistroReclutadorForm(UserCreationForm):
         required=False,
         widget=forms.TextInput(attrs={
             "class": "form-control",
-            "placeholder": "+56 9 1234 5678"
+            "placeholder": "9 1234 5678"
         })
     )
 
@@ -100,6 +100,12 @@ class RegistroReclutadorForm(UserCreationForm):
         if Reclutador.objects.filter(rut=rut).exists():
             raise ValidationError("Este RUT ya está registrado.")
         return rut
+    
+    def clean_telefono(self):
+        telefono = self.cleaned_data["telefono"]
+        if telefono and not re.match(r"^\+?56\s?9?\s?\d{4}\s?\d{4}$", telefono):
+            raise ValidationError("El número de teléfono no es válido. Formato esperado: 9 1234 5678")
+        return telefono
 
     def save(self, commit=True):
         user = super().save(commit=False)
