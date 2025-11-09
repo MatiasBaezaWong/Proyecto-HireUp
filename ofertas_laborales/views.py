@@ -305,12 +305,12 @@ def ver_postulaciones(request, id_oferta):
 
 # VER EL PERFIL DEL CANDIDATO (VISTA RECLUTADOR)
 @login_required
-def ver_perfil_candidato(request, postulacion_id):
+def ver_perfil_candidato(request, pk):
     # Solo los reclutadores pueden acceder
     if not hasattr(request.user, "perfil_reclutador"):
         return redirect("home")
 
-    postulaciones = get_object_or_404(Postulacion, id_postulacion=postulacion_id)
+    postulaciones = get_object_or_404(Postulacion, id_postulacion=pk)
     candidato = postulaciones.candidato
 
 
