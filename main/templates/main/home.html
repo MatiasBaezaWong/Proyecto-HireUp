@@ -3,16 +3,15 @@
 {% block content %}
 
 {% load static %}
-
 <header class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
   <div class="container-fluid px-4">
     <!-- LOGO -->
     <a class="navbar-brand d-flex align-items-center" href="#">
       <img src="{% static 'images/Logo.png' %}" alt="Logo" class="logo-img me-2">
-      <span class="fw-bold fs-7 text-dark">Ascensores Maximiliano Baeza E.I.R.L</span>
+      <span class="fs-3 text-dark d-none d-md-inline">Ascensores Maximiliano Baeza E.I.R.L</span>
     </a>
 
-    <!-- BOTÓN COLAPSABLE -->
+    <!-- MENU HAMBURGUESA -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
       aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -22,125 +21,76 @@
     <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
       <ul class="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
         <li class="nav-item">
-          <a class="nav-link fw-semibold" href="#">Servicios</a>
+          <a href="{% url 'main:registro_candidato' %}" class="btn btn-outline-success" id="btnAcceder">REGISTRARTE AL PORTAL</a>
         </li>
         <li class="nav-item">
-          <a href="{% url 'main:login' %}" class="btn btn-outline-success fw-semibold ms-lg-3 mt-2 mt-lg-0">
-            ACCEDER AL PORTAL
-          </a>
+          <a href="{% url 'main:login' %}" class="btn btn-outline-success ms-lg-3 mt-2 mt-lg-0" id="btnRegistro">ACCEDER AL PORTAL</a>
         </li>
       </ul>
     </div>
   </div>
 </header>
-<div id="carouselFullWidth" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="{% static 'images/carrusel-1.jpg' %}" class="d-block w-100 carousel-img" alt="Imagen 1">
-        </div>
-        <div class="carousel-item">
-            <img src="{% static 'images/carrusel-2.jpg' %}" class="d-block w-100 carousel-img" alt="Imagen 2">
-        </div>
-        <div class="carousel-item">
-            <img src="{% static 'images/carrusel-3.jpg' %}" class="d-block w-100 carousel-img" alt="Imagen 3">
-        </div>
-    </div>
+<!-- CARD PRINCIPAL -->
+<div class="card text-dark">
+  <img src="{% static 'images/Background-Card.png' %}" class="card-img img-limit" alt="Imagen-Home">
+  <div class="card-img-overlay d-flex flex-column justify-content-center align-items-start ps-5">
+    <h5 class="card-title fs-2">¿Quiénes Somos?</h5>
+    <p class="card-text align-items-start fs-5">En Ascensores Maximiliano Baeza E.I.R.L. somos una empresa en constante
+        crecimiento dedicada a la <br> instalación y mantención de ascensores, trabajando como socio estratégico de grandes compañías del <br> rubro. 
+        Nos especializamos en brindar un servicio seguro, eficiente y de calidad, respaldado por un <br> equipo técnico comprometido y capacitado.
+        Nuestro objetivo es consolidarnos como un referente  <br> confiable en el mercado, contribuyendo al éxito de cada proyecto y generando oportunidades para <br>
+        profesionales que deseen formar parte de nuestro desarrollo.</p>
 
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselFullWidth" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon"></span>
-        <span class="visually-hidden">Anterior</span>
-    </button>
-
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselFullWidth" data-bs-slide="next">
-        <span class="carousel-control-next-icon"></span>
-        <span class="visually-hidden">Siguiente</span>
-    </button>
+  </div>
 </div>
-<div class="container-fluid my-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-10">
-            <div class="row g-4">
-                <!-- Tarjeta 1 -->
-                <div class="col-12 col-md-6">
-                    <div class="card custom-card h-100">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="{% static 'images/Logotipo AMB.png' %}" class="img-fluid rounded-start"
-                                    alt="...">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title text-dark fw-bold">¿Quiénes Somos?</h5>
-                                    <p class="card-text">
-                                        En Ascensores Maximiliano Baeza E.I.R.L. somos una empresa en constante
-                                        crecimiento
-                                        dedicada a la instalación y mantención de ascensores,
-                                        trabajando como socio estratégico de grandes compañías del rubro. Nos
-                                        especializamos en brindar un
-                                        servicio seguro, eficiente y de calidad,
-                                        respaldado por un equipo técnico comprometido y capacitado. Nuestro objetivo es
-                                        consolidarnos como un
-                                        referente confiable en el mercado,
-                                        contribuyendo al éxito de cada proyecto y generando oportunidades para
-                                        profesionales que deseen formar
-                                        parte de nuestro desarrollo.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tarjeta 2 -->
-                <div class="col-12 col-md-6">
-                    <div class="card custom-card h-100">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="{% static 'images/Empresas.png' %}" class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h5 class="card-title text-dark fw-bold">¿Con quién trabajamos?</h5>
-                                    <p class="card-text">
-                                        En Ascensores Maximiliano Baeza E.I.R.L., trabajamos en estrecha colaboración
-                                        con empresas líderes del
-                                        rubro de la elevación y la construcción, consolidando alianzas estratégicas que
-                                        respaldan la calidad y
-                                        eficiencia de nuestros servicios. Nos enorgullece ser subcontratistas de
-                                        confianza de compañías como
-                                        Fabrimetal y Schindler, referentes internacionales en ingeniería vertical y
-                                        soluciones de transporte de
-                                        personas. Estas colaboraciones reflejan nuestro compromiso con la excelencia
-                                        técnica, la seguridad y la
-                                        mejora continua, contribuyendo activamente al desarrollo de proyectos de alto
-                                        estándar en todo el país.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- CARDS SECUNDARIAS -->
+<div class="container py-4">
+  <div class="row g-4">
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <img src="{% static 'images/carrusel-1.jpg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title fs-2">¿Con quien trabajamos?</h5>  
+          <p class="card-text pt-3">trabajamos en estrecha colaboración con empresas líderes del
+                            rubro de la elevación y la construcción, consolidando alianzas estratégicas que respaldan la calidad y
+                            eficiencia de nuestros servicios.</p>
         </div>
-    </div>
-    <div class="container single-card my-5 d-flex justify-content-center">
-        <div class="card custom-card mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-                <div class="col-md-4">
-                    <img src="{% static 'images/Logo HireUp.png' %}" class="img-fluid rounded-start" alt="...">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <h5 class="card-title">¿Quieres trabajar con nosotros?</h5>
-                        <p class="card-text">Ingresa al portal de reclutamiento HireUp y postula a un puesto de trabajo
-                            con Ascensores Maximiliano Baeza E.I.R.L</p>
-                        <a href="{% url 'main:registro_candidato' %}" class="btn btn-outline-success"><i
-                                class="bi bi-person m-2"></i>Crea tu Perfil</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <img src="{% static 'images/carrusel-2.jpg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title fs-2">¿Quieres trabajar con nosotros?</h5>
+          <p class="card-text">Ingresa al portal de reclutamiento HireUp y postula a un puesto de trabajo 
+            con Ascensores Maximiliano Baeza E.I.R.L</p>
+          <a href="{% url 'main:registro_candidato' %}" class="btn btn-outline-success w-100" id="btnAcceder"><i class="bi bi-person m-2"></i>Crea tu Perfil</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-md-4">
+      <div class="card h-100">
+        <img src="{% static 'images/carrusel-3.jpg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title fs-2">¿Que servicios brindamos?</h5>
+          <p class="card-text">Nos especializamos en la instalación y mantenimiento de ascensores para edificios residenciales, comerciales e industriales. 
+            Brindamos soluciones personalizadas, atención rápida y un servicio de calidad que asegura el confort y la seguridad de todos los usuarios.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FOOTER -->
+<footer class="bg-white text-center text-success py-4 mt-5">
+  <div class="container">
+    <p class="mb-1 fw-semibold">Ascensores Maximiliano Baeza E.I.R.L</p>
+    <p class="mb-1 small">Instalación y mantención profesional de ascensores</p>
+    <p class="mb-0 small text-muted">
+      © 2025 Ascensores Maximiliano Baeza — Todos los derechos reservados
+    </p>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}

@@ -3,13 +3,13 @@
 
 {% block content %}
 <div class="container py-5">
-    <!-- Título -->
+    <!-- TITULO -->
     <div class="text-center mb-5">
-        <h1 class="fw-bold text-success">Portal de Administración</h1>
+        <h1 class="fw-bold text-dark">Portal de Administración</h1>
         <div class="border-bottom border-3 border-success mx-auto" style="width: 120px;"></div>
     </div>
 
-    <!-- Estadísticas globales -->
+    <!-- ESTADISTICAS GLOBALES -->
     <div class="row text-center mb-5">
         <div class="col-12 col-sm-6 col-md-4 mb-3">
             <div class="card shadow-sm border-success h-100">
@@ -28,10 +28,10 @@
             </div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 mb-3">
-            <div class="card shadow-sm border-warning h-100">
+            <div class="card shadow-sm border-success h-100">
                 <div class="card-body">
                     <h5 class="card-title">Candidatos</h5>
-                    <h2 class="fw-bold text-warning">{{ total_candidatos }}</h2>
+                    <h2 class="fw-bold text-success">{{ total_candidatos }}</h2>
                 </div>
             </div>
         </div>
@@ -54,20 +54,19 @@
             </div>
         </div>
         <div class="col-12 col-sm-6 col-md-4 mb-3">
-            <div class="card shadow-sm border-warning h-100">
+            <div class="card shadow-sm border-success h-100">
                 <div class="card-body">
                     <h5 class="card-title">Entrevistas</h5>
-                    <h2 class="fw-bold text-warning">{{ total_entrevistas }}</h2>
+                    <h2 class="fw-bold text-success">{{ total_entrevistas }}</h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <a href="{% url 'administrador:gestionar_obras' %}" class="btn btn-outline-success">Gestionar Obras</a>
-    <!-- Paneles de acceso -->
+    <!-- PANELES DE ACCESO -->
     <div class="row g-4 text-center">
-        <!-- Panel de usuarios -->
-        <div class="col-12 col-md-4">
+        <!-- PANEL DE USUARIOS -->
+        <div class="col-6 col-md-3">
             <a href="{% url 'administrador:panel_usuarios' %}" class="text-decoration-none">
                 <div class="card shadow-sm h-100 hover-card">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center py-5">
@@ -79,8 +78,21 @@
             </a>
         </div>
 
-        <!-- Panel de ofertas -->
-        <div class="col-12 col-md-4">
+        <!-- PANEL DE OBRAS -->
+        <div class="col-6 col-md-3">
+            <a href="{% url 'administrador:gestionar_obras' %}" class="text-decoration-none">
+                <div class="card shadow-sm h-100 hover-card">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center py-5">
+                        <i class="bi bi-building-fill display-4 text-primary mb-3"></i>
+                        <h5 class="card-title fw-bold text-primary">Panel de Obras</h5>
+                        <p class="card-text text-muted">Administra todas las obras registradas en sistema.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- PANEL DE OFERTAS -->
+        <div class="col-6 col-md-3">
             <a href="" class="text-decoration-none">
                 <div class="card shadow-sm h-100 hover-card">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center py-5">
@@ -92,22 +104,27 @@
             </a>
         </div>
 
-        <!-- Panel de postulaciones -->
-        <div class="col-12 col-md-4">
+        <!-- PANEL DE POSTULACIONES -->
+        <div class="col-6 col-md-3">
             <a href="" class="text-decoration-none">
                 <div class="card shadow-sm h-100 hover-card">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center py-5">
-                        <i class="bi bi-file-earmark-text-fill display-4 text-warning mb-3"></i>
-                        <h5 class="card-title fw-bold text-warning">Panel de Postulaciones</h5>
+                        <i class="bi bi-file-earmark-text-fill display-4 text-success mb-3"></i>
+                        <h5 class="card-title fw-bold text-success">Panel de Postulaciones</h5>
                         <p class="card-text text-muted">Revisa y gestiona todas las postulaciones realizadas a las ofertas laborales.</p>
                     </div>
                 </div>
             </a>
         </div>
     </div>
+    <div class="text-center mb-4 pt-5">
+        <a href="{% url 'main:logout' %}" class="btn btn-outline-danger px-4 py-2 shadow-sm rounded-3">
+            <i class="bi bi-arrow-left me-2"></i> CERRAR SESION
+        </a>
+  </div>
 </div>
 
-<!-- Hover effect -->
+<!-- EFECTO HOVER -->
 <style>
 .hover-card:hover {
     transform: translateY(-5px);

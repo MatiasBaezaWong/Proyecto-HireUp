@@ -2,8 +2,9 @@ import re
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
-from main.models import Usuario, Reclutador, Candidato, Comuna, Obra
+from main.models import Usuario, Reclutador, Candidato, Comuna, Ciudad, Region, Obra
 
+# FORMULARIO CREACION RECLUTADOR
 class RegistroReclutadorForm(UserCreationForm):
     AREAS = [
         ("instalacion", "Instalación"),
@@ -119,6 +120,7 @@ class RegistroReclutadorForm(UserCreationForm):
             )
         return user   
 
+# FORMULARIO EDICION RECLUTADOR
 class EditarReclutadorForm(forms.ModelForm):
 
     email = forms.EmailField(label="email", max_length=254)
@@ -159,6 +161,7 @@ class EditarReclutadorForm(forms.ModelForm):
             reclutador.save()
         return reclutador
 
+# FORMULARIO EDICION CANDIDATO
 class EditarCandidatoForm(forms.ModelForm):
 
     email = forms.EmailField(label="email", max_length=254)
@@ -199,20 +202,58 @@ class EditarCandidatoForm(forms.ModelForm):
             candidato.save()
         return candidato
 
+# FORMULARIO CREACION OBRA
 class ObraForm(forms.ModelForm):
+    region = forms.ModelChoiceField(
+        queryset=Region.objects.all(),
+        required=True,
+        label="Región",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
+    ciudad = forms.ModelChoiceField(
+        queryset=Ciudad.objects.none(),
+        required=True,
+        label="Ciudad",
+        widget=forms.Select(attrs={"class": "form-select"})
+    )
+
     comuna = forms.ModelChoiceField(
-        queryset=Comuna.objects.all(),
-        widget=forms.Select(attrs={"class": "form-control"}),
-        label="Comuna"
+        queryset=Comuna.objects.none(),
+        required=True,
+        label="Comuna",
+        widget=forms.Select(attrs={"class": "form-select"})
     )
 
     class Meta:
         model = Obra
-        fields = ["nombre", "descripcion", "comuna", "direccion", "fecha_inicio", "fecha_termino"]
+        fields = ["nombre", "descripcion", "region", "ciudad", "comuna", "direccion", "fecha_inicio", "fecha_termino"]
         widgets = {
-            "nombre": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Torre Costanera"}),
+            "nombre": forms.TextInput(attrs={"class": "form-control"}),
             "descripcion": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
-            "direccion": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Av. Alameda"}),
-            "fecha_inicio": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
-            "fecha_termino": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
-        }    
+            "direccion": forms.TextInput(attrs={"class": "form-control"}),
+            "fecha_inicio": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+            "fecha_termino": forms.DateInput(attrs={"class": "form-control", "type": "date"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if "region" in self.data:
+            try:
+                region_id = int(self.data.get("region"))
+                self.fields["ciudad"].queryset = Ciudad.objects.filter(region_id=region_id)
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk and self.instance.comuna:
+            self.fields["ciudad"].queryset = Ciudad.objects.filter(region=self.instance.comuna.ciudad.region)
+
+        if "ciudad" in self.data:
+            try:
+                ciudad_id = int(self.data.get("ciudad"))
+                self.fields["comuna"].queryset = Comuna.objects.filter(ciudad_id=ciudad_id)
+            except (ValueError, TypeError):
+                pass
+        elif self.instance.pk and self.instance.comuna:
+            self.fields["comuna"].queryset = Comuna.objects.filter(ciudad=self.instance.comuna.ciudad)
+

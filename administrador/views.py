@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden, HttpResponse
 from django.contrib import messages
 from django.db.models import Count, Q
 from django.utils import timezone
+from django.http import JsonResponse
 import pandas as pd
 import openpyxl
 from django.http import FileResponse
@@ -16,7 +17,7 @@ import io
 from datetime import datetime
 
 from .forms import RegistroReclutadorForm, EditarReclutadorForm, EditarCandidatoForm, ObraForm
-from main.models import Usuario, Reclutador, Candidato, Obra, OfertaLaboral, Postulacion, Entrevista
+from main.models import Usuario, Reclutador, Candidato, Obra, Ciudad, Comuna, OfertaLaboral, Postulacion, Entrevista
 
 # Create your views here.
 
@@ -320,6 +321,16 @@ def gestionar_obras(request):
     return render(request, "administrador/gestionar_obras.html", {
         "obras": obras
     })
+
+def cargar_ciudades(request):
+    region_id = request.GET.get("region_id")
+    ciudades = list(Ciudad.objects.filter(region_id=region_id).values("id", "nombre"))
+    return JsonResponse({"ciudades": ciudades})
+
+def cargar_comunas(request):
+    ciudad_id = request.GET.get("ciudad_id")
+    comunas = list(Comuna.objects.filter(ciudad_id=ciudad_id).values("id", "nombre"))
+    return JsonResponse({"comunas": comunas})   
 
 
 @login_required

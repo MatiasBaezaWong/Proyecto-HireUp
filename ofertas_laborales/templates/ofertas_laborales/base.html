@@ -19,7 +19,7 @@
       <!-- Logo / Título -->
       <a class="navbar-brand fw-bold text-dark fs-5" href="{% url 'ofertas_laborales:vista_candidato' %}">
         <img src="{% static 'images/Logo.png' %}" alt="Logo" class="logo-img w-20 me-2">
-        HireUp <span class="text-dark fw-normal">- Plataforma de Reclutamiento</span>
+        HireUp <span class="text-dark fw-normal d-none d-md-inline">- Plataforma de Reclutamiento</span>
       </a>
 
       <!-- Botón hamburguesa para móviles -->
@@ -42,42 +42,18 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'ofertas_laborales:perfil_reclutador' %}">MI PERFIL</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ofertas_laborales:panel_postulaciones' %}">POSTULACIONES</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'ofertas_laborales:panel_entrevistas' %}">ENTREVISTAS</a>
+          </li>
           {% endif %}
           <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
             <a href="{% url 'main:logout' %}" class="btn btn-outline-danger">CERRAR SESION</a>
           </li>
         </ul>
       </div>
-      <!-- Menú de usuario
-    <div class="collapse navbar-collapse justify-content-end" id="hireupNavbar">
-      <ul class="navbar-nav align-items-center">
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center text-dark fw-semibold" href="#" id="userMenu" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle fs-5 me-2"></i>
-            {% if request.user.rol == 'candidato' %}
-              {{ request.candidato.nombre }} {{ request.candidato.apellido }}
-            {% elif request.user.rol == 'reclutador' %}
-              {{ request.reclutador.nombre }} {{ request.reclutador.apellido }}
-            {% endif %}
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3" aria-labelledby="userMenu">
-            <li>
-              {% if request.user.rol == 'candidato' %}
-                <a class="dropdown-item" href="{% url 'ofertas_laborales:perfil_candidato' %}">Mi Perfil</a>
-              {% elif request.user.rol == 'reclutador' %}
-                <a class="dropdown-item" href="{% url 'ofertas_laborales:perfil_reclutador' %}">Mi Perfil</a>
-              {% endif %}
-            </li>
-            <li>
-              {% if request.user.rol == 'candidato' %}
-                <a class="dropdown-item" href="{% url 'ofertas_laborales:listar_postulaciones' %}">Mis Postulaciones</a>
-              {% endif %}
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger fw-semibold" href="{% url 'main:logout' %}">Cerrar sesión</a></li>
-          </ul>
-        </li>-->
       </ul>
     </div>
     </div>

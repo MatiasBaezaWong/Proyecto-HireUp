@@ -15,5 +15,7 @@ urlpatterns = [
     path('eliminar/<int:pk>/', views.eliminar_reclutador, name='eliminar_reclutador'),
     path("obras/", views.gestionar_obras, name="gestionar_obras"),
     path("obras/nueva/", views.crear_obra, name="crear_obra"),
+    path("ajax/cargar-ciudades/", views.cargar_ciudades, name="ajax_cargar_ciudades"),
+    path("ajax/cargar-comunas/", views.cargar_comunas, name="ajax_cargar_comunas"),
     path('volver-home/', views.volver_home, name='volver_home')
 ]

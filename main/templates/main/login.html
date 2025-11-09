@@ -8,7 +8,7 @@
         <div class="border-bottom border-3 border-success mx-auto" style="width: 80px;"></div>
     </div>
 
-    <!-- Mensajes de Django -->
+    <!-- MENSAJES DE ERROR -->
     {% if messages %}
       {% for m in messages %}
         <div class="alert alert-{{ m.tags }} rounded-3">
@@ -17,7 +17,7 @@
       {% endfor %}
     {% endif %}
 
-    <!-- Formulario de login -->
+    <!-- FORMULARIO DE LOGIN -->
     <form method="POST" class="needs-validation">
       {% csrf_token %}
 
@@ -43,7 +43,7 @@
       <p class="mb-2">¿No tienes cuenta?
         <a href="{% url 'main:registro_candidato' %}" class="text-success fw-semibold text-decoration-none">Crea tu cuenta</a>
       </p>
-      <a href="{% url 'home' %}" class="btn btn-outline-primary w-100 py-2 rounded-3">
+      <a href="{% url 'home' %}" class="btn btn-outline-success w-100 py-2 rounded-3">
         <i class="bi bi-house-door me-2"></i> Volver al inicio
       </a>
     </div>

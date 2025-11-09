@@ -1,34 +1,70 @@
 {% extends 'administrador/base.html' %}
 {% block content %}
-    <main class="container">
-    <h2>Gestión de Obras</h2>
-    <a href="{% url 'administrador:crear_obra' %}" class="btn btn-primary mb-3">Registrar nueva obra</a>
+<main class="container mt-5 mb-5">
+  <!-- 🔹 Título principal -->
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-dark">Gestión de Obras</h2>
+    <div class="border-bottom border-3 border-success mx-auto" style="width: 120px;"></div>
+  </div>
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Comuna</th>
-            <th>Ciudad</th>
-            <th>Región</th>
-            <th>Inicio</th>
-            <th>Término</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for obra in obras %}
+  <!-- MENSAJES -->
+  {% if messages %}
+      {% for m in messages %}
+        <div class="alert alert-{{ m.tags }} rounded-3">
+          {{ m }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+  <!-- 🔹 Botón de acción -->
+  <div class="d-flex flex-column flex-md-row justify-content-md-end align-items-center gap-3 mb-4">
+    <a href="{% url 'administrador:crear_obra' %}" class="btn btn-success px-4 py-2 shadow-sm rounded-3 fw-semibold w-100 w-md-auto text-center">
+      <i class="bi bi-building-add me-2"></i> Registrar Nueva Obra
+    </a>
+  </div>
+
+  <!-- 🔹 Contenedor principal -->
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-body p-4">
+      <div class="table-responsive">
+        <table class="table align-middle table-hover">
+          <thead class="table-success text-center">
             <tr>
-            <td>{{ obra.nombre }}</td>
-            <td>{{ obra.comuna.nombre }}</td>
-            <td>{{ obra.comuna.ciudad.nombre }}</td>
-            <td>{{ obra.comuna.ciudad.region.nombre }}</td>
-            <td>{{ obra.fecha_inicio|default:"-" }}</td>
-            <td>{{ obra.fecha_termino|default:"-" }}</td>
+              <th>Nombre</th>
+              <th>Comuna</th>
+              <th>Ciudad</th>
+              <th>Región</th>
+              <th>Inicio</th>
+              <th>Término</th>
             </tr>
-        {% empty %}
-            <tr><td colspan="6" class="text-center">No hay obras registradas.</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    </main>
+          </thead>
+          <tbody>
+            {% for obra in obras %}
+              <tr>
+                <td class="fw-semibold">{{ obra.nombre }}</td>
+                <td>{{ obra.comuna.nombre }}</td>
+                <td>{{ obra.comuna.ciudad.nombre }}</td>
+                <td>{{ obra.comuna.ciudad.region.nombre }}</td>
+                <td>{{ obra.fecha_inicio|default:"-" }}</td>
+                <td>{{ obra.fecha_termino|default:"-" }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                  <i class="bi bi-exclamation-circle me-2"></i> No hay obras registradas.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mb-4 pt-5">
+        <a href="{% url 'administrador:portal_administrador' %}"
+            class="btn btn-outline-success px-4 py-2 shadow-sm rounded-3">
+            <i class="bi bi-arrow-left me-2"></i> Volver al Portal de Administrador
+        </a>
+  </div>
+</main>
 {% endblock %}
