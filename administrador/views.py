@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponse
 from django.contrib import messages
 from django.db.models import Count, Q, Count, Avg
+from django.db.models.functions import Lower, Replace, Trim
 from django.utils import timezone
 from django.http import JsonResponse
 import pandas as pd
@@ -15,10 +16,11 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, Tabl
 from reportlab.lib.styles import getSampleStyleSheet
 import io
 from datetime import datetime
-
 from .forms import RegistroReclutadorForm, EditarReclutadorForm, EditarCandidatoForm, ObraForm
 from main.models import Usuario, Reclutador, Candidato, Obra, Ciudad, Comuna, OfertaLaboral, Postulacion, Entrevista
-
+from django.db.models.functions import Lower, Replace, Trim
+from django.db.models import Value, Count, Q
+from django.core.paginator import Paginator
 # Create your views here.
 
 # PORTAL ADMINISTRADOR
@@ -214,6 +216,114 @@ def generar_informe_pdf(request):
 
     # Respuesta HTTP
     return FileResponse(buffer, as_attachment=True, filename=f"informe_usuarios_{datetime.now().date()}.pdf")
+
+@login_required
+def panel_postulacion(request):
+    buscar = (request.GET.get("buscar") or "").strip()
+    estado = (request.GET.get("estado") or "").strip()
+    desde_raw = (request.GET.get("desde") or "").strip()
+    hasta_raw = (request.GET.get("hasta") or "").strip()
+
+    qs = (
+        Postulacion.objects
+        .select_related("candidato", "oferta", "oferta__reclutador", "oferta__obra")
+    )
+
+    # --- filtros de texto ---
+    if buscar:
+        qs = qs.filter(
+            Q(candidato__nombre__icontains=buscar) |
+            Q(candidato__apellido__icontains=buscar) |
+            Q(oferta__titulo__icontains=buscar)
+        )
+
+    # --- normalización de estado a nivel de BD ---
+    # estado_norm = lower(trim(estado)); espacios y guiones -> underscore
+    qs = qs.annotate(
+        estado_norm=Lower(
+            Replace(
+                Replace(
+                    Trim("estado"),
+                    Value(" "), Value("_")
+                ),
+                Value("-"), Value("_")
+            )
+        )
+    )
+
+    # --- filtro por estado usando la versión normalizada (si el usuario eligió uno) ---
+    if estado:
+        # El <select> ahora debería enviar el mismo valor que mostramos (estado_norm)
+        qs = qs.filter(estado_norm=estado)
+
+    # --- rango fechas ---
+    from datetime import datetime
+    def _parse_date(s):
+        try:
+            return datetime.strptime(s, "%Y-%m-%d").date()
+        except Exception:
+            return None
+
+    d_desde = _parse_date(desde_raw)
+    d_hasta = _parse_date(hasta_raw)
+    if d_desde:
+        qs = qs.filter(fecha_postulacion__date__gte=d_desde)
+    if d_hasta:
+        qs = qs.filter(fecha_postulacion__date__lte=d_hasta)
+
+    # --- métricas usando estado_norm ---
+    total_postulaciones = qs.count()
+    ofertas_distintas   = qs.values("oferta_id").distinct().count()
+    promedio_por_oferta = round(total_postulaciones / ofertas_distintas, 2) if ofertas_distintas else 0
+
+    # tolerante a variantes: 'en_proceso', 'proceso', 'pendiente'...
+    postulaciones_en_proceso = qs.filter(estado_norm__in=["en_proceso", "proceso", "pendiente"]).count()
+    # tolerante a plural/sinónimos
+    postulaciones_aceptadas  = qs.filter(estado_norm__in=["aceptada", "aceptadas", "aprobada"]).count()
+
+    # --- opciones para el <select> (normalizadas) ---
+    estados_disponibles = (
+        qs.values_list("estado_norm", flat=True)
+        .distinct()
+        .order_by("estado_norm")
+    )
+
+    # --- gráficos por estado usando estado_norm ---
+    estado_rows = qs.values("estado_norm").annotate(c=Count("pk")).order_by("-c")
+    labels_estados = [
+        (r["estado_norm"] or "nd").replace("_", " ").title() for r in estado_rows
+    ]
+    data_estados   = [r["c"] for r in estado_rows]
+
+    # --- top ofertas ---
+    ofertas_rows = (
+        qs.values("oferta__titulo")
+        .annotate(c=Count("pk"))
+        .order_by("-c")[:10]
+    )
+    labels_ofertas = [r["oferta__titulo"] for r in ofertas_rows]
+    data_ofertas   = [r["c"] for r in ofertas_rows]
+
+    # --- tabla paginada ---
+    qs_tabla = qs.order_by("-fecha")
+    paginator  = Paginator(qs_tabla, 20)
+    page_obj   = paginator.get_page(request.GET.get("page"))
+
+    context = {
+        "total_postulaciones": total_postulaciones,
+        "promedio_por_oferta": promedio_por_oferta,
+        "postulaciones_en_proceso": postulaciones_en_proceso,
+        "postulaciones_aceptadas": postulaciones_aceptadas,
+        "estados_disponibles": estados_disponibles,
+        "labels_estados": labels_estados,
+        "data_estados": data_estados,
+        "labels_ofertas": labels_ofertas,
+        "data_ofertas": data_ofertas,
+        "postulaciones": page_obj,
+        "paginator": paginator,
+        "page_obj": page_obj,
+    }
+    return render(request, "administrador/panel_postulacion.html", context)
 
 # CREAR RECLUTADOR
 @login_required

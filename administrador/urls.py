@@ -6,6 +6,7 @@ app_name = "administrador"
 urlpatterns = [
     path("portal/", views.portal_administrador, name="portal_administrador"),
     path("panel_usuarios/", views.panel_usuarios, name="panel_usuarios"),
+    path("panel_postulacion/", views.panel_postulacion, name="panel_postulacion"),
     path("crear_reclutador/", views.crear_reclutador, name="crear_reclutador"),
     path("exportar_usuarios_excel/", views.exportar_usuarios_excel, name="exportar_usuarios_excel"),
     path("informe_pdf/", views.generar_informe_pdf, name="generar_informe_pdf"),

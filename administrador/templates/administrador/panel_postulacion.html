@@ -1,0 +1,174 @@
+{% extends 'administrador/base.html' %}
+{% block content %}
+<div class="container mt-5">
+<div class="text-center mb-4">
+    <h2 class="fw-bold text-dark">Panel de Postulaciones</h2>
+    <div class="border-bottom border-3 border-success mx-auto" style="width: 160px;"></div>
+</div>
+
+<div class="row text-center mb-4">
+    <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm rounded-4 d-flex flex-column" style="min-height: 120px;">
+        <div class="card-body d-flex flex-column justify-content-center w-100 text-center">
+            <h6 class="fw-semibold text-muted">Total Postulaciones</h6>
+            <h3 class="text-success fw-bold">{{ total_postulaciones|default:0 }}</h3>
+        </div>
+    </div>
+    </div>
+    <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm rounded-4 d-flex flex-column" style="min-height: 120px;">
+        <div class="card-body d-flex flex-column justify-content-center w-100 text-center">
+            <h6 class="fw-semibold text-muted">Promedio / Oferta</h6>
+            <h3 class="text-primary fw-bold">{{ promedio_por_oferta|default:0 }}</h3>
+        </div>
+    </div>
+    </div>
+    <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm rounded-4 d-flex flex-column" style="min-height: 120px;">
+        <div class="card-body d-flex flex-column justify-content-center w-100 text-center">
+            <h6 class="fw-semibold text-muted">Pendiente</h6>
+            <h3 class="text-info fw-bold">{{ postulaciones_en_proceso|default:0 }}</h3>
+        </div>
+    </div>
+    </div>
+    <div class="col-md-3 mb-3">
+    <div class="card border-0 shadow-sm rounded-4 d-flex flex-column" style="min-height: 120px;">
+        <div class="card-body d-flex flex-column justify-content-center w-100 text-center">
+        <h6 class="fw-semibold text-muted">Aprobada</h6>
+        <h3 class="text-success fw-bold">{{ postulaciones_aceptadas|default:0 }}</h3>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6 mb-4">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-success text-white fw-semibold">
+        Postulaciones por Estado
+        </div>
+        <div class="card-body">
+        <canvas id="chartEstados" height="200"></canvas>
+        </div>
+    </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-header bg-success text-white fw-semibold">
+        Postulaciones por Oferta
+        </div>
+        <div class="card-body">
+        <canvas id="chartOfertas" height="300"></canvas>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div class="card shadow-lg border-0 rounded-4">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+    <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Listado de Postulaciones</h5>
+    <div>
+        <a href="#" class="btn btn-light btn-sm fw-semibold me-2">
+        <i class="bi bi-download"></i> Excel
+        </a>
+        <a href="#" class="btn btn-light btn-sm fw-semibold">
+        <i class="bi bi-file-earmark-pdf"></i> PDF
+        </a>
+    </div>
+    </div>
+    <div class="card-body bg-white">
+    {% if postulaciones %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+            <th>Candidato</th>
+            <th>Oferta</th>
+            <th>Reclutador</th>
+            <th>Obra</th>
+            <th>Estado</th>
+            <th class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in postulaciones %}
+            <tr>
+            <td>{{ p.candidato.nombre }} {{ p.candidato.apellido }}</td>
+            <td>{{ p.oferta.titulo }}</td>
+            <td>{{ p.oferta.reclutador.nombre }} {{ p.oferta.reclutador.apellido }}</td>
+            <td>{{ p.oferta.obra.nombre|default:"-" }}</td>
+            <td>
+                {% if p.estado == 'aprobada' %}
+                <span class="badge"  style="background-color: #28a745; color: white;">Aprobada</span>
+                {% elif p.estado == 'rechazada' %}
+                <span class="badge" style="background-color: #dc3545; color: white;">Rechazada</span>
+                {% elif p.estado == 'pendiente' %}
+                <span class="badge" style="background-color: #00b0ff; color: white;">Pendiente</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ p.estado|default:"N/D"|capfirst }}</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <!-- Coloca aquí tus URLs reales si existen -->
+                <a href="#" class="btn btn-outline-success btn-sm me-2" title="Ver Detalle">
+                <i class="bi bi-eye"></i>
+                </a>
+                <a href="#" class="btn btn-outline-primary btn-sm me-2" title="Editar Estado">
+                <i class="bi bi-pencil-square"></i>
+                </a>
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-muted text-center mb-0">No hay postulaciones registradas.</p>
+    {% endif %}
+    </div>
+</div>
+<div class="text-center mb-4 pt-5">
+        <a href="{% url 'administrador:portal_administrador' %}"
+            class="btn btn-outline-success px-4 py-2 shadow-sm rounded-3">
+            <i class="bi bi-arrow-left me-2"></i> Volver al Portal de Administrador
+        </a>
+</div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Datos por estado (vienen del contexto)
+const ctxEstados = document.getElementById("chartEstados").getContext("2d");
+new Chart(ctxEstados, {
+    type: "doughnut",
+    data: {
+        labels: {{ labels_estados|default:'["Pendiente","Aceptada","Rechazada"]'|safe }},
+        datasets: [{
+            data: {{ data_estados|default:"[0,0,0]" |safe }},
+            backgroundColor: ["#dc3545", "#28a745","#00b0ff"],
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { position: "bottom" } } }
+});
+
+  // Datos por oferta (Top N ofertas)
+const ctxOfertas = document.getElementById("chartOfertas").getContext("2d");
+new Chart(ctxOfertas, {
+    type: "bar",
+    data: {
+    labels: {{ labels_ofertas|default:'[]'|safe }},
+    datasets: [{
+        label: "Postulaciones",
+        data: {{ data_ofertas|default:'[]'|safe }},
+        backgroundColor: "#00b0ff",
+    }]
+    },
+    options: {
+    scales: { y: { beginAtZero: true } },
+    plugins: { legend: { display: false } },
+    }
+});
+</script>
+{% endblock %}
