@@ -33,9 +33,6 @@ DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ["https://hireup-g53h.onrender.com"]
 
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('https://hireup-g53h.onrender.com/')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
