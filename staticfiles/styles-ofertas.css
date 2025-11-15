@@ -1,3 +1,7 @@
+/* =========================================================
+   BASE
+========================================================= */
+
 /* HEADER */
 .hireup-navbar {
   background: #f4f5f5;
@@ -7,13 +11,11 @@
   z-index: 1000;
 }
 
-/* Marca */
 .hireup-navbar .navbar-brand {
   font-size: 1.2rem;
   letter-spacing: 0.5px;
 }
 
-/* Menú */
 .hireup-navbar .nav-link {
   color: black !important;
   transition: color 0.2s ease;
@@ -25,12 +27,13 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* OFERTAS */
+/* GENERAL */
 body {
   background-color: #f4f5f5;
   font-family: 'Inter', sans-serif;
 }
 
+/* OFERTAS */
 .card-oferta {
   background-color: #ffffff;
   border-radius: 15px;
@@ -42,7 +45,7 @@ body {
   transform: translateY(-3px);
   box-shadow: 0 6px 18px rgba(80, 150, 100, 0.15);
   border-color: #000000ab;
-  cursor: pointer;;
+  cursor: pointer;
 }
 
 .card-oferta h4 {
@@ -69,8 +72,10 @@ body {
   box-shadow: 0 0 10px rgba(39, 174, 96, 0.4);
 }
 
-/* MIS POSTULACIONES */
-/* ========== CONTENEDOR PRINCIPAL ========== */
+/* =========================================================
+   MIS POSTULACIONES
+========================================================= */
+
 .postulaciones-container {
   background-color: #ffffff;
   border-radius: 1rem;
@@ -87,7 +92,7 @@ body {
   color: #1e1e1e;
 }
 
-/* ========== FILTRO SUPERIOR ========== */
+/* FILTRO SUPERIOR */
 .filtro-form {
   display: flex;
   justify-content: flex-end;
@@ -118,7 +123,7 @@ body {
   box-shadow: 0 0 6px rgba(39, 174, 96, 0.3);
 }
 
-/* === TARJETA DE FILTROS === */
+/* TARJETA DE FILTROS */
 .filtros-card {
   background-color: #ffffff;
   border-radius: 1rem;
@@ -155,12 +160,10 @@ body {
   box-shadow: 0 0 8px rgba(39, 174, 96, 0.25);
 }
 
-/* === BOTONES DE FILTRO === */
 .filtros-card .btn-success {
   background-color: #27ae60;
   border: none;
   font-weight: 500;
-  transition: all 0.2s ease;
 }
 
 .filtros-card .btn-success:hover {
@@ -179,8 +182,7 @@ body {
   color: #000;
 }
 
-
-/* ========== TABLA DE POSTULACIONES ========== */
+/* TABLA */
 .table-wrapper {
   overflow-x: auto;
   border-radius: 0.75rem;
@@ -211,7 +213,7 @@ body {
   background-color: #f4f5f5;
 }
 
-/* ========== ESTADOS (BADGES) ========== */
+/* BADGES */
 .badge {
   display: inline-block;
   padding: 0.35rem 0.75rem;
@@ -236,7 +238,7 @@ body {
   color: #721c24;
 }
 
-/* ========== BOTONES ========== */
+/* BOTONES */
 .btn-ver {
   display: inline-block;
   padding: 0.4rem 0.8rem;
@@ -254,8 +256,7 @@ body {
   box-shadow: 0 0 8px rgba(39, 174, 96, 0.4);
 }
 
-/* ========== PAGINACION ========== */
-
+/* Paginación */
 .hireup-page {
   color: #198754 !important;
   border-color: #198754 !important;
@@ -282,16 +283,55 @@ body {
   border-color: #ddd;
 }
 
+/* =========================================================
+   RESPONSIVE (ORDEN CORRECTO Y SIN CONFLICTOS)
+========================================================= */
 
-
-/* ========== RESPONSIVE DESIGN ========== */
-
-/* 📱 Móviles (reformateamos la tabla como tarjetas) */
+/* 🎯 1) Móviles (<=600px) — TODO UNIFICADO */
 @media (max-width: 600px) {
+
+  /* Contenedor */
   .postulaciones-container {
     padding: 1.25rem;
   }
 
+  /* Navbar */
+  .navbar .navbar-brand {
+    font-size: 1rem !important;
+    text-align: center;
+    width: 100%;
+  }
+
+  .hireup-navbar .nav-link {
+    text-align: center;
+    padding: 0.75rem 0;
+  }
+
+  /* Cards */
+  .card-oferta {
+    margin-bottom: 1rem;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-oferta h4 {
+    font-size: 1rem;
+  }
+
+  .card-oferta p {
+    font-size: 0.9rem;
+  }
+
+  .col-md-3 {
+    padding-top: 20px;
+  }
+
+  /* Botones */
+  .btn-outline-success {
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  /* Filtros arriba */
   .filtro-form {
     flex-direction: column;
     align-items: center;
@@ -303,7 +343,7 @@ body {
     text-align: center;
   }
 
-  /* 🔹 Tabla convertida a cards */
+  /* TABLA → Tarjetas */
   .tabla-postulaciones,
   .tabla-postulaciones thead,
   .tabla-postulaciones tbody,
@@ -352,49 +392,7 @@ body {
   }
 }
 
-
-
-/* RESPONSIVE */
-@media (max-width: 575.98px) {
-
-  /* Navbar */
-  .navbar .navbar-brand {
-    font-size: 1rem;
-    text-align: center;
-    width: 100%;
-  }
-
-  .hireup-navbar .nav-link {
-    text-align: center;
-    padding: 0.75rem 0;
-  }
-
-  /* Cards */
-  .card-oferta {
-    margin-bottom: 1rem;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  }
-
-  .card-oferta h4 {
-    font-size: 1rem;
-  }
-
-  .card-oferta p {
-    font-size: 0.9rem;
-  }
-
-  .col-md-3 {
-    padding-top: 20px;
-  }
-
-  /* Botones */
-  .btn-outline-success {
-    font-size: 0.9rem;
-    width: 100%;
-  }
-}
-
-/* Pantallas entre 576px y 991px */
+/* 🎯 2) Tablets y pantallas medianas */
 @media (min-width: 576px) and (max-width: 991.98px) {
 
   .hireup-navbar .navbar-brand {
@@ -422,7 +420,7 @@ body {
   }
 }
 
-/* Pantallas mayores a 1200px */
+/* 🎯 3) Desktop grande */
 @media (min-width: 1200px) {
   .card-oferta {
     transition: transform 0.25s ease, box-shadow 0.25s ease;
