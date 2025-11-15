@@ -69,10 +69,10 @@
     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
     <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Listado de Postulaciones</h5>
     <div>
-        <a href="#" class="btn btn-light btn-sm fw-semibold me-2">
+        <a href="{% url 'administrador:exportar_postulaciones_excel' %}" class="btn btn-light btn-sm fw-semibold me-2">
         <i class="bi bi-download"></i> Excel
         </a>
-        <a href="#" class="btn btn-light btn-sm fw-semibold">
+        <a href="{% url 'administrador:generar_informe_postulaciones_pdf' %}" class="btn btn-light btn-sm fw-semibold">
         <i class="bi bi-file-earmark-pdf"></i> PDF
         </a>
     </div>
@@ -140,35 +140,47 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   // Datos por estado (vienen del contexto)
-const ctxEstados = document.getElementById("chartEstados").getContext("2d");
-new Chart(ctxEstados, {
-    type: "doughnut",
-    data: {
-        labels: {{ labels_estados|default:'["Pendiente","Aceptada","Rechazada"]'|safe }},
-        datasets: [{
-            data: {{ data_estados|default:"[0,0,0]" |safe }},
-            backgroundColor: ["#dc3545", "#28a745","#00b0ff"],
-        }]
-    },
-    options: { responsive: true, plugins: { legend: { position: "bottom" } } }
-});
+    const ctxEstados = document.getElementById("chartEstados").getContext("2d");
+    new Chart(ctxEstados, {
+        type: "doughnut",
+        data: {
+            labels: {{ labels_estados|default:"['pendiente', 'aprobada', 'rechazada']"|safe }},
+            datasets: [{
+                data: {{ data_estados|default:"[0,0,0]" |safe }},
+                // Forzar los colores en el orden de los labels
+                backgroundColor: [
+                    "#dc3545", // Rojo para "Rechazada"
+                    "#28a745", // Verde para "Aprobada"
+                    "#00b0ff"  // Azul para "Pendiente"
+                ],
+            }]
+        },
+        options: { 
+            responsive: true, 
+            plugins: { 
+            legend: { 
+                position: "bottom" 
+            } 
+            }
+        }
+    });
 
   // Datos por oferta (Top N ofertas)
-const ctxOfertas = document.getElementById("chartOfertas").getContext("2d");
-new Chart(ctxOfertas, {
-    type: "bar",
-    data: {
-    labels: {{ labels_ofertas|default:'[]'|safe }},
-    datasets: [{
-        label: "Postulaciones",
-        data: {{ data_ofertas|default:'[]'|safe }},
-        backgroundColor: "#00b0ff",
-    }]
-    },
-    options: {
-    scales: { y: { beginAtZero: true } },
-    plugins: { legend: { display: false } },
-    }
-});
+    const ctxOfertas = document.getElementById("chartOfertas").getContext("2d");
+    new Chart(ctxOfertas, {
+        type: "bar",
+        data: {
+        labels: {{ labels_ofertas|default:'[]'|safe }},
+        datasets: [{
+            label: "Postulaciones",
+            data: {{ data_ofertas|default:'[]'|safe }},
+            backgroundColor: "#00b0ff",
+        }]
+        },
+        options: {
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { display: false } },
+        }
+    });
 </script>
 {% endblock %}

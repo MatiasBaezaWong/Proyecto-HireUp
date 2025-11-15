@@ -21,6 +21,7 @@ from main.models import Usuario, Reclutador, Candidato, Obra, Ciudad, Comuna, Of
 from django.db.models.functions import Lower, Replace, Trim
 from django.db.models import Value, Count, Q
 from django.core.paginator import Paginator
+from io import BytesIO
 # Create your views here.
 
 # PORTAL ADMINISTRADOR
@@ -324,6 +325,79 @@ def panel_postulacion(request):
         "page_obj": page_obj,
     }
     return render(request, "administrador/panel_postulacion.html", context)
+
+@login_required
+def exportar_postulaciones_excel(request):
+    if request.user.rol != "administrador":
+        return HttpResponseForbidden("Acceso denegado")
+
+    data = []
+    postulaciones = Postulacion.objects.select_related("candidato", "oferta", "oferta__reclutador", "oferta__obra")
+
+    for p in postulaciones:
+        data.append({
+            "Candidato": f"{p.candidato.nombre} {p.candidato.apellido}",
+            "Oferta": p.oferta.titulo,
+            "Reclutador": f"{p.oferta.reclutador.nombre} {p.oferta.reclutador.apellido}",
+            "Obra": p.oferta.obra.nombre,
+            "Estado": p.estado,
+        })
+
+    df = pd.DataFrame(data)
+    response = HttpResponse(content_type="application/vnd.ms-excel")
+    response["Content-Disposition"] = f'attachment; filename="postulaciones_{timezone.now().date()}.xlsx"'
+    df.to_excel(response, index=False)
+    return response
+
+@login_required
+def generar_informe_postulaciones_pdf(request):
+    if request.user.rol != "administrador":
+        return HttpResponseForbidden("Acceso denegado")
+
+    # Datos de postulaciones
+    postulaciones = Postulacion.objects.select_related("candidato", "oferta", "oferta__reclutador", "oferta__obra")
+
+    # Configuración PDF
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    elements = []
+    styles = getSampleStyleSheet()
+    style_title = styles["Title"]
+    style_body = styles["BodyText"]
+    style_heading = styles["Heading2"]
+
+    elements.append(Paragraph("Informe de Postulaciones - HireUp", style_title))
+    elements.append(Spacer(1, 12))
+    elements.append(Paragraph(f"Fecha de generación: {datetime.now().strftime('%d/%m/%Y %H:%M')}", style_body))
+    elements.append(Spacer(1, 20))
+
+    # Tabla de postulaciones
+    data = [["Candidato", "Oferta", "Reclutador", "Obra", "Estado"]]
+    for p in postulaciones:
+        data.append([
+            f"{p.candidato.nombre} {p.candidato.apellido}",
+            p.oferta.titulo,
+            f"{p.oferta.reclutador.nombre} {p.oferta.reclutador.apellido}",
+            p.oferta.obra.nombre,
+            p.estado,
+        ])
+    
+    table = Table(data, colWidths=[2*inch, 2*inch, 2*inch, 2*inch, 1.5*inch, 1.5*inch])
+    table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#00bfa6")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.whitesmoke),
+    ]))
+    elements.append(table)
+
+    doc.build(elements)
+    buffer.seek(0)
+    
+    # Respuesta HTTP
+    return FileResponse(buffer, as_attachment=True, filename=f"informe_postulaciones_{datetime.now().date()}.pdf")
 
 # CREAR RECLUTADOR
 @login_required
