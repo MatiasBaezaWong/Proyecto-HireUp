@@ -119,12 +119,14 @@ DATABASES = {
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'HireUp_DB',
-        "NAME": "postgres",
-        "USER": "postgres.aevbwiroyfozpstpcxdw",
-        "PASSWORD": "Hireup2025",
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
         "HOST": "aws-1-sa-east-1.pooler.supabase.com",
         "PORT": "5432",
         "POOL_MODE": "session",
+        "OPTIONS": {
+            "sslmode": "require",
+        },
     }
 }
 
