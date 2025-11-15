@@ -41,9 +41,10 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://" + RENDER_EXTERNAL_HOSTNAME if RENDER_EXTERNAL_HOSTNAME else "",
-]    
+CSRF_TRUSTED_ORIGINS = []
+
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{RENDER_EXTERNAL_HOSTNAME}")   
 
 # Application definition
 
@@ -118,10 +119,10 @@ DATABASES = {
     #}
     'default': {
        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'HireUp_DB',
+        'NAME': os.environ.get("DB_NAME"),
         'USER': os.environ.get("DB_USER"),
         'PASSWORD': os.environ.get("DB_PASSWORD"),
-        "HOST": "aws-1-sa-east-1.pooler.supabase.com",
+        'HOST': os.environ.get("DB_HOST"),
         "PORT": "5432",
         "POOL_MODE": "session",
         "OPTIONS": {
